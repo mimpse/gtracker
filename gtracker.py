@@ -25,6 +25,7 @@ pygtk.require('2.0')
 from configwindow import *
 from pivotal import *
 from story import *
+from state import *
 
 try:
    import pynotify
@@ -156,9 +157,10 @@ class Gtracker:
          self.stories[proj_id] = []
          stories = self.pivotal.get_stories(proj_id)
          for story in stories:
-            self.stories[proj_id].append(Story(*story))             
+            sobj = Story(*story)
+            print sobj
+            self.stories[proj_id].append(sobj)             
             count += 1
-            print story[2],story[5]
 
       self.set_tooltip(_("%d stories retrieved.") % count)
       self.blinking(False)
@@ -229,4 +231,4 @@ class Gtracker:
       return rsp
 
 if __name__ == "__main__":
-   gpomo = Gtracker()
+   gtracker = Gtracker()
