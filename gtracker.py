@@ -23,6 +23,8 @@ import threading
 pygtk.require('2.0')
 
 from configwindow import *
+from pivotal import *
+from story import *
 
 try:
    import pynotify
@@ -45,6 +47,14 @@ _ = gettext.gettext
 
 gobject.threads_init()
 
+class InitThread(threading.Thread):
+   def __init__(self,gui):
+      super(InitThread,self).__init__()
+      self.gui = gui
+
+   def run(self):
+      self.gui.init()
+
 class Gtracker:
    
    def __init__(self):
@@ -52,6 +62,9 @@ class Gtracker:
       self.started   = datetime.datetime.now()
       self.username  = None
       self.password  = None
+      self.pivotal   = None
+      self.projects  = {}
+      self.stories   = {}
 
       self.interval   = self.gconf.get_int("/apps/gtracker/interval")
       if self.interval<1:
@@ -96,11 +109,63 @@ class Gtracker:
       if notify>0:
          pynotify.init("Gtracker")
 
+      t = InitThread(self)
+      t.start()
+
       self.set_tooltip("Gtracker - Control your Pivotal Tracker stories from the tray bar")
       gtk.main()
 
-   def is_authenticated(self):
+   def have_authentication_info(self):
       return self.username!=None and self.password!=None and len(self.username)>0 and len(self.password)>0
+
+   def init(self):
+      self.set_tooltip(_("Starting authentication ..."))
+      if not self.have_authentication_info():
+         ConfigWindow(self)
+      if not self.have_authentication_info():
+         self.show_error(_("You need to authenticate with username and password!"))
+         self.working = False
+         return
+      self.check_stories()
+
+   def check_stories(self):
+      self.working = True
+      self.blinking(True)
+
+      try:
+         self.pivotal = Pivotal(self)
+         if not self.pivotal.auth():
+            self.show_error(_("Could not authenticate. Please try again."))
+            self.working = False
+            return
+      except Exception as exc:
+         self.show_error(_("Error authenticating. Please try again."))
+         self.working = False
+         return
+
+      self.set_tooltip(_("Retrieving projects info ..."))
+      projs = self.pivotal.get_projects()
+      count = 0
+
+      for proj in projs:
+         proj_id, proj_name = proj
+         self.projects[proj_id] = proj_name
+         print "project: %s (%s)" % (proj_name,proj_id)
+
+         self.set_tooltip(_("Retrieving stories for project %s ...") % proj_name)
+         self.stories[proj_id] = []
+         stories = self.pivotal.get_stories(proj_id)
+         for story in stories:
+            self.stories[proj_id].append(Story(*story))             
+            count += 1
+            print story[2],story[5]
+
+      self.set_tooltip(_("%d stories retrieved.") % count)
+      self.blinking(False)
+      self.working = False
+
+   def blinking(self,blink):
+      self.statusIcon.set_blinking(blink)
 
    def get_icon(self,icon):
       for base in DATA_DIRS:
@@ -110,6 +175,8 @@ class Gtracker:
       return None  
 
    def right_click(self, widget, button, time, data = None):
+      if self.working:
+         return
       data.show_all()
       data.popup(None, None, gtk.status_icon_position_menu, button, time, self.statusIcon)
 
@@ -117,7 +184,8 @@ class Gtracker:
       self.statusIcon.set_tooltip(text)
 
    def left_click(self,widget,data):
-      pass
+      if self.working:
+         return
 
    def config(self, widget, data = None):
       ConfigWindow(self)
@@ -142,6 +210,23 @@ class Gtracker:
 
    def quit(self,widget,data=None):
       gtk.main_quit()
+
+   def show_error(self,msg):
+      self.show_dialog(gtk.MESSAGE_ERROR,msg)
+
+   def show_info(self,msg):
+      self.show_dialog(gtk.MESSAGE_INFO,msg)
+
+   def show_dialog(self,msg_type,msg):    
+      dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,msg_type,gtk.BUTTONS_OK,msg)
+      dialog.run()
+      dialog.destroy()
+
+   def ask(self,msg):
+      dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,msg)
+      rsp = dialog.run()
+      dialog.destroy()
+      return rsp
 
 if __name__ == "__main__":
    gpomo = Gtracker()
