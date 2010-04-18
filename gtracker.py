@@ -82,6 +82,7 @@ class Gtracker:
       if notify>0:
          pynotify.init("Gtracker")
 
+      self.set_tooltip("Gtracker - Control your Pivotal Tracker stories from the tray bar")
       gtk.main()
 
    def get_icon(self,icon):
@@ -94,6 +95,9 @@ class Gtracker:
    def right_click(self, widget, button, time, data = None):
       data.show_all()
       data.popup(None, None, gtk.status_icon_position_menu, button, time, self.statusIcon)
+
+   def set_tooltip(self,text):
+      self.statusIcon.set_tooltip(text)
 
    def left_click(self,widget,data):
       pass
