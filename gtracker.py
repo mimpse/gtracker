@@ -109,6 +109,18 @@ class Gtracker:
       pass
 
    def about(self,widget,data=None):
+      self.about = gtk.AboutDialog()
+      self.about.set_name(__appname__)
+      self.about.set_program_name(__appname__)
+      self.about.set_version(__version__)
+      self.about.set_copyright(__copyright__)
+      self.about.set_license(__license__)
+      self.about.set_website(__website__)
+      self.about.set_website_label(__website__)
+      self.about.set_authors(["%s <%s>" % (__author__,__email__)])
+      self.about.set_logo(gtk.gdk.pixbuf_new_from_file(self.get_icon("gtracker.png")))
+      self.about.run()
+      self.about.destroy()
       pass
 
    def quit(self,widget,data=None):
