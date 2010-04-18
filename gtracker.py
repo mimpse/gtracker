@@ -22,6 +22,8 @@ import threading
 
 pygtk.require('2.0')
 
+from configwindow import *
+
 try:
    import pynotify
    notify = 1
@@ -48,11 +50,23 @@ class Gtracker:
    def __init__(self):
       self.gconf     = gconf.client_get_default()
       self.started   = datetime.datetime.now()
+      self.username  = None
+      self.password  = None
 
-      self.timeout   = self.gconf.get_int("/apps/gtracker/timeout")
-      if self.timeout<1:
-         self.timeout = 15
-         self.gconf.set_int("/apps/gtracker/timeout",self.timeout)
+      self.interval   = self.gconf.get_int("/apps/gtracker/interval")
+      if self.interval<1:
+         self.interval = 15
+         self.gconf.set_int("/apps/gtracker/interval",self.interval)
+
+      self.username   = self.gconf.get_string("/apps/gtracker/username")
+      if self.username==None or len(self.username)<1:
+         self.username = ""
+         self.gconf.set_string("/apps/gtracker/username","")
+
+      self.password  = self.gconf.get_string("/apps/gtracker/password")
+      if self.password==None or len(self.password)<1:
+         self.password = ""
+         self.gconf.set_string("/apps/gtracker/password",self.password)
 
       self.menu = gtk.Menu()
 
@@ -85,6 +99,9 @@ class Gtracker:
       self.set_tooltip("Gtracker - Control your Pivotal Tracker stories from the tray bar")
       gtk.main()
 
+   def is_authenticated(self):
+      return self.username!=None and self.password!=None and len(self.username)>0 and len(self.password)>0
+
    def get_icon(self,icon):
       for base in DATA_DIRS:
          path = os.path.join(base,"images",icon)
@@ -103,7 +120,7 @@ class Gtracker:
       pass
 
    def config(self, widget, data = None):
-      pass
+      ConfigWindow(self)
 
    def stats(self,widget,data):
       pass
