@@ -12,6 +12,7 @@ import os
 import sys
 import gtk
 import glob
+import time
 import gobject
 import pygtk
 import gconf
@@ -66,6 +67,7 @@ class Gtracker:
       self.pivotal   = None
       self.projects  = {}
       self.stories   = {}
+      self.working   = False
 
       self.interval   = self.gconf.get_int("/apps/gtracker/interval")
       if self.interval<1:
@@ -91,21 +93,18 @@ class Gtracker:
       self.statusIcon.connect('popup-menu', self.right_click, self.menu)
       self.statusIcon.set_visible(1)
 
-      self.configItem = gtk.MenuItem(_("Configuration"))
-      self.configItem.connect('activate', self.config, self.statusIcon)
-      self.menu.append(self.configItem)
+      self.configItem   = None
+      self.checkItem    = None
+      self.statItem     = None
+      self.aboutItem    = None
+      self.quitItem     = None
 
-      self.statItem = gtk.MenuItem(_("Statistics"))
-      self.statItem.connect('activate', self.stats, self.statusIcon)
-      self.menu.append(self.statItem)
-
-      self.aboutItem = gtk.MenuItem(_("About"))
-      self.aboutItem.connect('activate', self.about, self.statusIcon)
-      self.menu.append(self.aboutItem)
-
-      self.quitItem = gtk.MenuItem(_("Quit"))
-      self.quitItem.connect('activate', self.quit, self.statusIcon)
-      self.menu.append(self.quitItem)
+      self.make_config_item()
+      self.make_check_item()
+      self.make_stat_item()
+      self.make_about_item()
+      self.make_quit_item()
+      self.set_tooltip("Gtracker - Control your Pivotal Tracker stories from the tray bar")
 
       if notify>0:
          pynotify.init("Gtracker")
@@ -113,34 +112,74 @@ class Gtracker:
       t = InitThread(self)
       t.start()
 
-      self.set_tooltip("Gtracker - Control your Pivotal Tracker stories from the tray bar")
       gtk.main()
+
+   def make_config_item(self):
+      if self.configItem==None:
+         self.configItem = gtk.MenuItem(_("Configuration"))
+         self.configItem.connect('activate', self.config, self.statusIcon)
+      self.menu.append(self.configItem)
+      return self.configItem
+
+   def make_check_item(self):
+      if self.checkItem==None:
+         self.checkItem = gtk.MenuItem(_("Check now!"))
+         self.checkItem.connect('activate', self.check_now, self.statusIcon)
+      self.menu.append(self.checkItem)
+      return self.checkItem
+
+   def make_stat_item(self):
+      if self.statItem==None:
+         self.statItem = gtk.MenuItem(_("Statistics"))
+         self.statItem.connect('activate', self.stats, self.statusIcon)
+      self.menu.append(self.statItem)
+      return self.statItem
+
+   def make_about_item(self):
+      if self.aboutItem==None:
+         self.aboutItem = gtk.MenuItem(_("About"))
+         self.aboutItem.connect('activate', self.about, self.statusIcon)
+      self.menu.append(self.aboutItem)
+      return self.aboutItem
+
+   def make_quit_item(self):
+      if self.quitItem==None:
+         self.quitItem = gtk.MenuItem(_("Quit"))
+         self.quitItem.connect('activate', self.quit, self.statusIcon)
+      self.menu.append(self.quitItem)
+      return self.quitItem
 
    def have_authentication_info(self):
       return self.username!=None and self.password!=None and len(self.username)>0 and len(self.password)>0
 
+   def show_auth_message(self):
+      self.set_tooltip(_("Please configure your username and password and try again"))
+      self.blinking(True)
+
    def init(self):
-      self.set_tooltip(_("Starting authentication ..."))
+      self.set_tooltip(_("Authenticating and verifying stories ..."))
       if not self.have_authentication_info():
-         ConfigWindow(self)
-      if not self.have_authentication_info():
-         self.show_error(_("You need to authenticate with username and password!"))
-         self.working = False
+         self.show_auth_message()
          return
       self.check_stories()
 
    def check_stories(self):
+      if not self.have_authentication_info():
+         self.show_auth_message()
+         self.show_error(_("Please configure your username and password and try again"))
+         return
+
       self.working = True
       self.blinking(True)
 
       try:
          self.pivotal = Pivotal(self)
          if not self.pivotal.auth():
-            self.show_error(_("Could not authenticate. Please try again."))
+            self.set_tooltip(_("Could not authenticate. Please verify your username and password and try again."))
             self.working = False
             return
       except Exception as exc:
-         self.show_error(_("Error authenticating. Please try again."))
+         self.set_tooltip(_("Error authenticating. Please try again."))
          self.working = False
          return
 
@@ -179,6 +218,7 @@ class Gtracker:
    def right_click(self, widget, button, time, data = None):
       if self.working:
          return
+      self.blinking(False)
       data.show_all()
       data.popup(None, None, gtk.status_icon_position_menu, button, time, self.statusIcon)
 
@@ -188,6 +228,10 @@ class Gtracker:
    def left_click(self,widget,data):
       if self.working:
          return
+      self.blinking(False)
+
+   def check_now(self,widget,data=None):
+      self.check_stories()
 
    def config(self, widget, data = None):
       ConfigWindow(self)

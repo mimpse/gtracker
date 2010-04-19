@@ -1,5 +1,6 @@
 import gtk
 import pygtk
+import gobject
 import gettext
 
 _ = gettext.gettext
@@ -15,7 +16,7 @@ class ConfigWindow(gtk.Window):
       self.resp         = None
       table             = gtk.Table(2,2,True)
 
-      userStr         = gtk.Label(_("User name"))
+      userStr         = gtk.Label(_("Username"))
       self.userTxt    = gtk.Entry()
       self.userTxt.set_text(str(self.manager.username))
 
@@ -60,16 +61,18 @@ class ConfigWindow(gtk.Window):
    def save(self,widget):
       username = self.userTxt.get_text()
       self.manager.gconf.set_string("/apps/gtracker/username",username)
-      self.manager.username = username
 
       password = self.passTxt.get_text()
       self.manager.gconf.set_string("/apps/gtracker/password",password)
-      self.manager.password = password
 
       interval = int(self.intervalTxt.get_text())
       self.manager.gconf.set_int("/apps/gtracker/interval",interval)
-      self.manager.interval = interval
 
+      if len(username)>0 and len(password)>0 and (username!=self.manager.username or password!=self.manager.password):
+         self.manager.username = username
+         self.manager.password = password
+         self.manager.interval = interval
+         gobject.idle_add(self.manager.check_stories)
       self.destroy()
 
    def dontsave(self,widget):
