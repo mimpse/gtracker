@@ -251,6 +251,9 @@ class Gtracker:
       if not silent and self.ask(_("Are you sure you want to mark task '%s' as completed?") % task.description)!=gtk.RESPONSE_YES:
          return
 
+      task_menu_item    = task.menu_item
+      task_menu_parent  = task.menu_item.parent
+
       # extra checking
       task = self.pivotal.get_task(task)
       if task.complete!="false":
@@ -261,10 +264,7 @@ class Gtracker:
       if rst and not silent:
          self.show_info(_("Task '%s' marked as completed.") % task.description)
 
-      # voided here ! get before!
-      print task.menu_item
-      print task.menu_item.parent
-      task.menu_item.parent.remove(task.menu_item)
+      task_menu_parent.remove(task_menu_item)
       story = self.stories[task.proj_id][task.story_id]
       story.remove_task(task)
       # TODO: update task description
