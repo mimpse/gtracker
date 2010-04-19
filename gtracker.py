@@ -209,30 +209,31 @@ class Gtracker:
 
          self.stories[proj_id] = {}
 
-         proj_item = gtk.MenuItem(proj_name)
+         proj_item = gtk.MenuItem(proj_name,False)
          self.menu.append(proj_item)
 
          submenu = gtk.Menu()
          proj_item.set_submenu(submenu)
 
          for story in stories:
-            sobj = Story(*story)
-            self.stories[proj_id][sobj.id] = sobj             
-            tasks       = self.pivotal.get_tasks(proj_id,sobj.id,sobj.name,True)
-            sobj.tasks  = tasks
+            self.stories[proj_id][story.id] = story             
+            tasks       = self.pivotal.get_tasks(proj_id,story.id,story.name,True)
+            story.tasks = tasks
             task_size   = len(tasks)
 
-            menu_item = gtk.MenuItem("%s" % sobj)
-            sobj.menu_item = menu_item
+            menu_item = gtk.MenuItem(("%s" % story),False)
+            story.menu_item = menu_item
             
             if task_size>0:
                task_submenu = gtk.Menu()
                for task in tasks:
-                  task_menuitem = gtk.MenuItem("%s" % task)
+                  task_menuitem = gtk.MenuItem(("%s" % task),False)
                   task_menuitem.connect("activate",self.complete_task_from_menu,task)
                   task.menu_item = task_menuitem
                   task_submenu.append(task_menuitem)
                menu_item.set_submenu(task_submenu)
+            else:
+               menu_item.connect("activate",self.walk_story_from_menu,story)
 
             submenu.append(menu_item)
             count += 1
@@ -240,6 +241,12 @@ class Gtracker:
       self.set_tooltip(_("%d stories retrieved.") % count)
       self.blinking(False)
       self.working = False
+
+   def walk_story_from_menu(self,widget,story):
+      self.walk_story(story,False)
+
+   def walk_story(self,story,silent=False):
+      pass
 
    def complete_task_from_menu(self,widget,task):
       self.complete_task(task,False)

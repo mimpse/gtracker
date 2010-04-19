@@ -123,7 +123,7 @@ class Pivotal:
             owner = owner[0].firstChild.data
          else:
             owner = "nobody"
-         return [proj_id,id,name,state,owner,points]
+         return Story(proj_id,id,name,state,owner,points)
       except Exception as exc:
          print exc
          return None
