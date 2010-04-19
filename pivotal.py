@@ -55,6 +55,26 @@ class Pivotal:
          data.append(self.make_story(proj_id,story))
       return data         
 
+   def get_tasks(self,proj_id,story_id,story_name,only_completed):
+      data     = []
+      headers  = {}
+      headers['X-TrackerToken'] = self.token
+
+      try:
+         url   = "%s/%s/stories/%s/tasks" % (PROJECTS_URL,proj_id,story_id)
+         tasks = self.get_xml("task",url,"GET",None,headers)
+
+         if len(tasks)<1:
+            return data
+
+         for task in tasks:
+            otask = self.make_task(proj_id,story_id,story_name,task)
+            if only_completed and otask[6]!="true":
+               data.append(otask)
+      except:
+         pass
+      return data
+
    def make_story(self,proj_id,data):
       id       = data.getElementsByTagName("id")[0].firstChild.data
       name     = data.getElementsByTagName("name")[0].firstChild.data
@@ -66,6 +86,13 @@ class Pivotal:
       else:
          owner = "nobody"
       return [proj_id,id,name,state,owner,points]
+
+   def make_task(self,proj_id,story_id,story_name,data):
+      id       = data.getElementsByTagName("id")[0].firstChild.data
+      desc     = data.getElementsByTagName("description")[0].firstChild.data
+      position = data.getElementsByTagName("position")[0].firstChild.data
+      complete = data.getElementsByTagName("complete")[0].firstChild.data
+      return [proj_id,story_id,story_name,id,desc,position,complete]
 
    def walk_story(self,id):
       pass

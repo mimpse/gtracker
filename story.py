@@ -11,6 +11,7 @@ class Story:
       self.state     = state
       self.owner     = owner
       self.points    = points
+      self.tasks     = []
       self.menu_item = menu_item
 
    def __str__(self):

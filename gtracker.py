@@ -27,6 +27,7 @@ from configwindow import *
 from pivotal import *
 from story import *
 from state import *
+from task import *
 
 try:
    import pynotify
@@ -217,8 +218,24 @@ class Gtracker:
          for story in stories:
             sobj = Story(*story)
             self.stories[proj_id].append(sobj)             
-            menu_item = gtk.MenuItem("%s" % sobj)
+            tasks       = self.pivotal.get_tasks(proj_id,sobj.id,sobj.name,True)
+            sobj.tasks  = tasks
+            task_size   = len(tasks)
+
+            if task_size>0:
+               menu_item = gtk.MenuItem("%s (%d tasks)" % (sobj,task_size))
+            else:
+               menu_item = gtk.MenuItem("%s" % sobj)
             sobj.menu_item = menu_item
+            
+            if task_size>0:
+               task_submenu = gtk.Menu()
+               for task in tasks:
+                  stask = Task(*task)
+                  task_menuitem = gtk.MenuItem("%s" % stask)
+                  task_submenu.append(task_menuitem)
+               menu_item.set_submenu(task_submenu)
+
             submenu.append(menu_item)
             count += 1
 
