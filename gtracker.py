@@ -199,20 +199,28 @@ class Gtracker:
       for proj in projs:
          proj_id, proj_name = proj
          self.projects[proj_id] = proj_name
+
+         self.set_tooltip(_("Retrieving stories for project %s ...") % proj_name)
+         stories = self.pivotal.get_stories(proj_id)
+
+         if len(stories)<1:
+            continue
+
+         self.stories[proj_id] = []
+
          proj_item = gtk.MenuItem(proj_name)
          self.menu.append(proj_item)
 
-         self.set_tooltip(_("Retrieving stories for project %s ...") % proj_name)
-         self.stories[proj_id] = []
-         stories = self.pivotal.get_stories(proj_id)
+         submenu = gtk.Menu()
+         proj_item.set_submenu(submenu)
+
          for story in stories:
             sobj = Story(*story)
             self.stories[proj_id].append(sobj)             
-            menu_item = gtk.MenuItem("- %s" % sobj)
+            menu_item = gtk.MenuItem("%s" % sobj)
             sobj.menu_item = menu_item
-            self.menu.append(menu_item)
+            submenu.append(menu_item)
             count += 1
-         self.menu.append(gtk.SeparatorMenuItem())
 
       self.make_control_menu()
       self.set_tooltip(_("%d stories retrieved.") % count)
