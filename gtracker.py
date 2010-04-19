@@ -222,10 +222,7 @@ class Gtracker:
             sobj.tasks  = tasks
             task_size   = len(tasks)
 
-            if task_size>0:
-               menu_item = gtk.MenuItem("%s (%d tasks)" % (sobj,task_size))
-            else:
-               menu_item = gtk.MenuItem("%s" % sobj)
+            menu_item = gtk.MenuItem("%s" % sobj)
             sobj.menu_item = menu_item
             
             if task_size>0:
@@ -264,10 +261,18 @@ class Gtracker:
       if rst and not silent:
          self.show_info(_("Task '%s' marked as completed.") % task.description)
 
+      # remove from menu
       task_menu_parent.remove(task_menu_item)
+
       story = self.stories[task.proj_id][task.story_id]
       story.remove_task(task)
-      # TODO: update task description
+      story.menu_item.set_label(story.__str__())
+
+      # remove submenu
+      if(len(story.tasks)<1):
+         story.menu_item.remove_submenu()
+         # TODO: insert activate event
+     
       return rst
 
    def blinking(self,blink):
