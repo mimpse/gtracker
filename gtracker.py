@@ -222,7 +222,6 @@ class Gtracker:
             submenu.append(menu_item)
             count += 1
 
-      self.make_control_menu()
       self.set_tooltip(_("%d stories retrieved.") % count)
       self.blinking(False)
       self.working = False
