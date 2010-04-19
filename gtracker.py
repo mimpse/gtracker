@@ -84,14 +84,8 @@ class Gtracker:
          self.password = ""
          self.gconf.set_string("/apps/gtracker/password",self.password)
 
-      self.menu = gtk.Menu()
-
-      self.statusIcon = gtk.StatusIcon()
-      self.statusIcon.set_from_file(self.get_icon("gtracker.png"))
-      self.statusIcon.set_visible(True)
-      self.statusIcon.connect('activate'  , self.left_click, self.menu)
-      self.statusIcon.connect('popup-menu', self.right_click, self.menu)
-      self.statusIcon.set_visible(1)
+      self.menu         = gtk.Menu()
+      self.config_menu  = gtk.Menu()
 
       self.configItem   = None
       self.checkItem    = None
@@ -99,11 +93,14 @@ class Gtracker:
       self.aboutItem    = None
       self.quitItem     = None
 
-      self.make_config_item()
-      self.make_check_item()
-      self.make_stat_item()
-      self.make_about_item()
-      self.make_quit_item()
+      self.statusIcon = gtk.StatusIcon()
+      self.statusIcon.set_from_file(self.get_icon("gtracker.png"))
+      self.statusIcon.set_visible(True)
+      self.statusIcon.connect('activate'  , self.left_click , self.menu)
+      self.statusIcon.connect('popup-menu', self.right_click, self.config_menu)
+      self.statusIcon.set_visible(1)
+
+      self.make_control_menu()
       self.set_tooltip("Gtracker - Control your Pivotal Tracker stories from the tray bar")
 
       if notify>0:
@@ -116,38 +113,45 @@ class Gtracker:
 
    def make_config_item(self):
       if self.configItem==None:
-         self.configItem = gtk.MenuItem(_("Configuration"))
-         self.configItem.connect('activate', self.config, self.statusIcon)
-      self.menu.append(self.configItem)
+         self.configItem = gtk.MenuItem(_("Authentication"))
+         self.configItem.connect('activate', self.config)
+      self.config_menu.append(self.configItem)
       return self.configItem
 
    def make_check_item(self):
       if self.checkItem==None:
          self.checkItem = gtk.MenuItem(_("Check now!"))
-         self.checkItem.connect('activate', self.check_now, self.statusIcon)
-      self.menu.append(self.checkItem)
+         self.checkItem.connect('activate', self.check_now)
+      self.config_menu.append(self.checkItem)
       return self.checkItem
 
    def make_stat_item(self):
       if self.statItem==None:
          self.statItem = gtk.MenuItem(_("Statistics"))
-         self.statItem.connect('activate', self.stats, self.statusIcon)
-      self.menu.append(self.statItem)
+         self.statItem.connect('activate', self.stats)
+      self.config_menu.append(self.statItem)
       return self.statItem
 
    def make_about_item(self):
       if self.aboutItem==None:
          self.aboutItem = gtk.MenuItem(_("About"))
-         self.aboutItem.connect('activate', self.about, self.statusIcon)
-      self.menu.append(self.aboutItem)
+         self.aboutItem.connect('activate', self.about)
+      self.config_menu.append(self.aboutItem)
       return self.aboutItem
 
    def make_quit_item(self):
       if self.quitItem==None:
          self.quitItem = gtk.MenuItem(_("Quit"))
-         self.quitItem.connect('activate', self.quit, self.statusIcon)
-      self.menu.append(self.quitItem)
+         self.quitItem.connect('activate', self.quit)
+      self.config_menu.append(self.quitItem)
       return self.quitItem
+
+   def make_control_menu(self):
+      self.make_config_item()
+      self.make_check_item()
+      self.make_stat_item()
+      self.make_about_item()
+      self.make_quit_item()
 
    def have_authentication_info(self):
       return self.username!=None and self.password!=None and len(self.username)>0 and len(self.password)>0
@@ -163,6 +167,10 @@ class Gtracker:
          return
       self.check_stories()
 
+   def clear_menu(self):
+      for menuitem in self.menu.get_children():
+         self.menu.remove(menuitem)
+
    def check_stories(self):
       if not self.have_authentication_info():
          self.show_auth_message()
@@ -171,6 +179,7 @@ class Gtracker:
 
       self.working = True
       self.blinking(True)
+      self.clear_menu()
 
       try:
          self.pivotal = Pivotal(self)
@@ -190,17 +199,22 @@ class Gtracker:
       for proj in projs:
          proj_id, proj_name = proj
          self.projects[proj_id] = proj_name
-         print "project: %s (%s)" % (proj_name,proj_id)
+         proj_item = gtk.MenuItem(proj_name)
+         self.menu.append(proj_item)
 
          self.set_tooltip(_("Retrieving stories for project %s ...") % proj_name)
          self.stories[proj_id] = []
          stories = self.pivotal.get_stories(proj_id)
          for story in stories:
             sobj = Story(*story)
-            print sobj
             self.stories[proj_id].append(sobj)             
+            menu_item = gtk.MenuItem("- %s" % sobj)
+            sobj.menu_item = menu_item
+            self.menu.append(menu_item)
             count += 1
+         self.menu.append(gtk.SeparatorMenuItem())
 
+      self.make_control_menu()
       self.set_tooltip(_("%d stories retrieved.") % count)
       self.blinking(False)
       self.working = False
@@ -229,9 +243,12 @@ class Gtracker:
       if self.working:
          return
       self.blinking(False)
+      data.show_all()
+      data.popup(None,None,None,3,0)
 
    def check_now(self,widget,data=None):
-      self.check_stories()
+      t = InitThread(self)
+      t.start()
 
    def config(self, widget, data = None):
       ConfigWindow(self)

@@ -17,4 +17,4 @@ class Story:
       state_info  = States.get_state(self.state)
       next_state  = States.get_state(state_info.next_states[0])
       points      = _("Unestimated") if int(self.points)<0 else ("%s points" % self.points)
-      return _("%s %s (%s) (%s)") % (next_state.verb,self.name,points,self.owner)
+      return _("%s: %s (%s) (%s)") % (next_state.verb,self.name,points,self.owner)
