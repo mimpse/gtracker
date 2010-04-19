@@ -207,7 +207,7 @@ class Gtracker:
          if len(stories)<1:
             continue
 
-         self.stories[proj_id] = []
+         self.stories[proj_id] = {}
 
          proj_item = gtk.MenuItem(proj_name)
          self.menu.append(proj_item)
@@ -217,7 +217,7 @@ class Gtracker:
 
          for story in stories:
             sobj = Story(*story)
-            self.stories[proj_id].append(sobj)             
+            self.stories[proj_id][sobj.id] = sobj             
             tasks       = self.pivotal.get_tasks(proj_id,sobj.id,sobj.name,True)
             sobj.tasks  = tasks
             task_size   = len(tasks)
@@ -231,8 +231,9 @@ class Gtracker:
             if task_size>0:
                task_submenu = gtk.Menu()
                for task in tasks:
-                  stask = Task(*task)
-                  task_menuitem = gtk.MenuItem("%s" % stask)
+                  task_menuitem = gtk.MenuItem("%s" % task)
+                  task_menuitem.connect("activate",self.complete_task_from_menu,task)
+                  task.menu_item = task_menuitem
                   task_submenu.append(task_menuitem)
                menu_item.set_submenu(task_submenu)
 
@@ -242,6 +243,32 @@ class Gtracker:
       self.set_tooltip(_("%d stories retrieved.") % count)
       self.blinking(False)
       self.working = False
+
+   def complete_task_from_menu(self,widget,task):
+      self.complete_task(task,False)
+
+   def complete_task(self,task,silent=False):
+      if not silent and self.ask(_("Are you sure you want to mark task '%s' as completed?") % task.description)!=gtk.RESPONSE_YES:
+         return
+
+      # extra checking
+      task = self.pivotal.get_task(task)
+      if task.complete!="false":
+         return False
+      
+      # if not completed, try to complete now
+      rst = self.pivotal.complete_task(task)
+      if rst and not silent:
+         self.show_info(_("Task '%s' marked as completed.") % task.description)
+
+      # voided here ! get before!
+      print task.menu_item
+      print task.menu_item.parent
+      task.menu_item.parent.remove(task.menu_item)
+      story = self.stories[task.proj_id][task.story_id]
+      story.remove_task(task)
+      # TODO: update task description
+      return rst
 
    def blinking(self,blink):
       self.statusIcon.set_blinking(blink)

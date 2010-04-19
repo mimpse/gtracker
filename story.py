@@ -19,3 +19,14 @@ class Story:
       next_state  = States.get_state(state_info.next_states[0])
       points      = _("Unestimated") if int(self.points)<0 else ("%s points" % self.points)
       return _("%s: %s (%s) (%s)") % (next_state.verb,self.name,points,self.owner)
+
+   def remove_task(self,task):
+      found = None
+      for t in self.tasks:
+         if task.id==t.id:
+            found = t
+            break
+      if found==None:
+         return False
+      self.tasks.remove(t)
+      return True

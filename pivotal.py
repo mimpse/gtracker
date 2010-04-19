@@ -5,6 +5,9 @@ import xml.dom.minidom
 AUTH_URL       = "https://www.pivotaltracker.com/services/v3/tokens/active"
 PROJECTS_URL   = "http://www.pivotaltracker.com/services/v3/projects"
 
+from story import *
+from task  import *
+
 class Pivotal:
    def __init__(self,gui):
       self.gui       = gui
@@ -55,6 +58,40 @@ class Pivotal:
          data.append(self.make_story(proj_id,story))
       return data         
 
+   def get_task(self,data):
+      headers  = {}
+      headers['X-TrackerToken'] = self.token
+      
+      try:
+         url   = "%s/%s/stories/%s/tasks/%s" % (PROJECTS_URL,data.proj_id,data.story_id,data.id)
+         tasks = self.get_xml("task",url,"GET",None,headers)
+
+         if len(tasks)<1:
+            return None
+         return self.make_task(data.proj_id,data.story_id,data.story_name,tasks[0])
+      except Exception as exc:
+         print exc
+         return None
+
+   def complete_task(self,task):
+      headers  = {}
+      headers['X-TrackerToken']  = self.token
+      headers["Content-type"]    = "application/xml"
+
+      try:
+         url   = "%s/%s/stories/%s/tasks/%s" % (PROJECTS_URL,task.proj_id,task.story_id,task.id)
+         data  = "<task><complete>true</complete></task>"
+         tasks = self.get_xml("task",url,"PUT",data,headers)
+
+         if len(tasks)<1:
+            return False
+
+         task = self.make_task(task.proj_id,task.story_id,task.story_name,tasks[0])
+         return task.complete=="true"
+      except Exception as exc:
+         print "complete_task: %s" % exc
+         return False
+
    def get_tasks(self,proj_id,story_id,story_name,only_completed):
       data     = []
       headers  = {}
@@ -69,30 +106,38 @@ class Pivotal:
 
          for task in tasks:
             otask = self.make_task(proj_id,story_id,story_name,task)
-            if only_completed and otask[6]!="true":
+            if only_completed and otask.complete!="true":
                data.append(otask)
-      except:
-         pass
+      except Exception as exc:
+         print "get_tasks: %s" % exc 
       return data
 
    def make_story(self,proj_id,data):
-      id       = data.getElementsByTagName("id")[0].firstChild.data
-      name     = data.getElementsByTagName("name")[0].firstChild.data
-      state    = data.getElementsByTagName("current_state")[0].firstChild.data
-      points   = data.getElementsByTagName("estimate")[0].firstChild.data
-      owner    = data.getElementsByTagName("owned_by")
-      if len(owner)>0:
-         owner = owner[0].firstChild.data
-      else:
-         owner = "nobody"
-      return [proj_id,id,name,state,owner,points]
+      try:
+         id       = data.getElementsByTagName("id")[0].firstChild.data
+         name     = data.getElementsByTagName("name")[0].firstChild.data
+         state    = data.getElementsByTagName("current_state")[0].firstChild.data
+         points   = data.getElementsByTagName("estimate")[0].firstChild.data
+         owner    = data.getElementsByTagName("owned_by")
+         if len(owner)>0:
+            owner = owner[0].firstChild.data
+         else:
+            owner = "nobody"
+         return [proj_id,id,name,state,owner,points]
+      except Exception as exc:
+         print exc
+         return None
 
    def make_task(self,proj_id,story_id,story_name,data):
-      id       = data.getElementsByTagName("id")[0].firstChild.data
-      desc     = data.getElementsByTagName("description")[0].firstChild.data
-      position = data.getElementsByTagName("position")[0].firstChild.data
-      complete = data.getElementsByTagName("complete")[0].firstChild.data
-      return [proj_id,story_id,story_name,id,desc,position,complete]
+      try:
+         id       = data.getElementsByTagName("id")[0].firstChild.data
+         desc     = data.getElementsByTagName("description")[0].firstChild.data
+         position = data.getElementsByTagName("position")[0].firstChild.data
+         complete = data.getElementsByTagName("complete")[0].firstChild.data
+         return Task(proj_id,story_id,story_name,id,desc,position,complete)
+      except Exception as exc:
+         print exc
+         return None
 
    def walk_story(self,id):
       pass
