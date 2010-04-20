@@ -223,6 +223,9 @@ class Gtracker:
 
             menu_item = gtk.MenuItem(("%s" % story),False)
             story.menu_item = menu_item
+
+            if story.done or int(story.points)<0:
+               story.menu_item.set_sensitive(False)
             
             if task_size>0:
                task_submenu = gtk.Menu()
@@ -233,7 +236,7 @@ class Gtracker:
                   task_submenu.append(task_menuitem)
                menu_item.set_submenu(task_submenu)
             else:
-               menu_item.connect("activate",self.walk_story_from_menu,story)
+               menu_item.connect("activate",self.update_story_state_from_menu,story)
 
             submenu.append(menu_item)
             count += 1
@@ -242,11 +245,48 @@ class Gtracker:
       self.blinking(False)
       self.working = False
 
-   def walk_story_from_menu(self,widget,story):
-      self.walk_story(story,False)
+   def update_story_state_from_menu(self,widget,story):
+      self.update_story_state(story,False)
 
-   def walk_story(self,story,silent=False):
-      pass
+   def choose_from_states(self,states):
+      image = gtk.Image()
+      image.set_from_file(self.get_icon("gtracker.png"))
+      dialog = gtk.Dialog(_("Please choose"),None,gtk.DIALOG_MODAL,(states[0].verb,1000,states[1].verb,1001,_("Cancel"),gtk.RESPONSE_CANCEL))
+      label = gtk.Label(_("Please choose what you want\nto do with your story."))
+      dialog.vbox.pack_start(label,padding=10,expand=True,fill=True)
+      dialog.vbox.pack_end(image,padding=10)
+      dialog.show_all()
+      resp = dialog.run()
+      dialog.destroy()
+      return resp
+
+   def update_story_state(self,story,silent=False):
+      # choose state
+      next_states = story.next_states()
+      if len(next_states)>1:
+         states = [States.get_state(next_states[0]),States.get_state(next_states[1])]
+         rsp    = self.choose_from_states(states)
+         if rsp==gtk.RESPONSE_CANCEL:
+            self.show_error(_("Story update canceled!"))
+            return False
+         next_state = next_states[rsp-1000]
+      else:
+         next_state = next_states[0]
+
+      state_obj = States.get_state(next_state)
+      if not silent and self.ask(_("Are you sure you want to %s '%s'?") % (state_obj.verb.lower(),story.name))!=gtk.RESPONSE_YES:
+         return False
+
+      rsp = self.pivotal.update_story_state(story,next_state)
+      if not silent and not rsp:
+         self.show_error(_("Could not start to work on '%s'") % story.name)
+         return False
+
+      story.menu_item.set_label(story.__str__())
+      if story.done:
+         story.menu_item.set_sensitive(False)
+      self.show_info(_("'%s' %s.") % (story.name,state_obj.past.lower()))
+      return True
 
    def complete_task_from_menu(self,widget,task):
       self.complete_task(task,False)
@@ -278,7 +318,7 @@ class Gtracker:
       # remove submenu
       if(len(story.tasks)<1):
          story.menu_item.remove_submenu()
-         # TODO: insert activate event
+         story.menu_item.connect("activate",self.update_story_state_from_menu,story)
      
       return rst
 

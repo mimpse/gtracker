@@ -13,15 +13,26 @@ class Story:
       self.points    = points
       self.tasks     = []
       self.menu_item = menu_item
+      self.done      = False
 
    def __str__(self):
-      state_info  = States.get_state(self.state)
-      next_state  = States.get_state(state_info.next_states[0])
-      points      = _("Unestimated") if int(self.points)<0 else ("%s points" % self.points)
+      next_states = self.next_states()
+      state_desc  = _(" or ").join([States.get_state(st).verb for st in next_states])
+      state_desc  = state_desc.lower().capitalize()
+
+      # nothing more to do here
+      if len(state_desc)<1:
+         state_desc  = "Done"
+         self.done   = True
+
+      points = _("Unestimated") if int(self.points)<0 else ("%s points" % self.points)
       if len(self.tasks)>0:
-         return _("%s: %s (%s) (%s) (%d tasks)") % (next_state.verb,self.name,points,self.owner,len(self.tasks))
+         return _("%s: %s (%s) (%s) (%d tasks)") % (state_desc,self.name,points,self.owner,len(self.tasks))
       else:
-         return _("%s: %s (%s) (%s)") % (next_state.verb,self.name,points,self.owner)
+         return _("%s: %s (%s) (%s)") % (state_desc,self.name,points,self.owner)
+
+   def next_states(self):
+      return States.get_state(self.state).next_states
 
    def remove_task(self,task):
       found = None

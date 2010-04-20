@@ -42,11 +42,21 @@ class Pivotal:
          data.append([id,name])
       return data         
 
+   def get_story(self,story):
+      headers = {}
+      headers['X-TrackerToken'] = self.token
+
+      url      = "%s/%s/stories/%s" % (PROJECTS_URL,story.proj_id,story.id)
+      stories  = self.get_xml("story",url,"GET",None,headers)
+      if len(stories)<1:
+         return None
+      return self.make_story(story.proj_id,stories[0])
+
    def get_stories(self,proj_id):
       headers = {}
       headers['X-TrackerToken'] = self.token
 
-      filter   = urllib.urlencode({'filter': 'state:unstarted,unscheduled,started'})
+      filter   = urllib.urlencode({'filter': 'state:unstarted,unscheduled,started,finished,delivered,rejected'})
       url      = "%s/%s/stories?%s" % (PROJECTS_URL,proj_id,filter)
       stories  = self.get_xml("story",url,"GET",None,headers)
       data     = []
@@ -70,7 +80,7 @@ class Pivotal:
             return None
          return self.make_task(data.proj_id,data.story_id,data.story_name,tasks[0])
       except Exception as exc:
-         print exc
+         print "get_task: %s" % exc 
          return None
 
    def complete_task(self,task):
@@ -125,7 +135,7 @@ class Pivotal:
             owner = "nobody"
          return Story(proj_id,id,name,state,owner,points)
       except Exception as exc:
-         print exc
+         print "make_story: %s" % exc
          return None
 
    def make_task(self,proj_id,story_id,story_name,data):
@@ -136,39 +146,35 @@ class Pivotal:
          complete = data.getElementsByTagName("complete")[0].firstChild.data
          return Task(proj_id,story_id,story_name,id,desc,position,complete)
       except Exception as exc:
-         print exc
+         print "make_task: %s" % exc
          return None
 
-   def walk_story(self,id):
-      pass
-
-   def start_story(self,story):
-      return self.update_story_state(story,"started")
-
-   def finish_story(self,story):
-      return self.update_story_state(story,"finished")
-
-   def deliver_story(self,story):
-      return self.update_story_state(story,"delivered")
-
-   def update_story_state(self,story,status):
+   def update_story_state(self,story,state):
       try:
+         # extra checking
+         cstory = self.get_story(story)
+         if story.state!=cstory.state:
+            return False
+
          headers = {}
          headers["X-TrackerToken"]  = self.token
          headers["Content-type"]    = "application/xml"
 
-         proj_id, id, name, state, owned = story
-         url   = "%s/%s/stories/%s" % (PROJECTS_URL,proj_id,id)
-         data  = ("<story><current_state>%s</current_state></story>" % status)
-         story = self.get_xml("story",url,"PUT",data,headers)
-         if len(story)<1:
+         url      = "%s/%s/stories/%s" % (PROJECTS_URL,story.proj_id,story.id)
+         data     = ("<story><current_state>%s</current_state></story>" % state)
+         rstory   = self.get_xml("story",url,"PUT",data,headers)
+
+         if len(rstory)<1:
             return False
-         sid = story[0].getElementsByTagName("id")[0]
-         if sid.firstChild.data!=id:
+
+         sid = rstory[0].getElementsByTagName("id")[0]
+         if sid.firstChild.data!=story.id:
             return False
-         return self.make_story(proj_id,story[0])
+
+         story.state = state
+         return True
       except Exception as exc:
-         print "Error updating story state: %s" % exc
+         print "update_story_state: %s" % exc
          return False
 
    def get_xml(self,elem,url,method="GET",data=None,headers=None):
