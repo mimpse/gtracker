@@ -68,10 +68,11 @@ class ConfigWindow(gtk.Window):
       interval = int(self.intervalTxt.get_text())
       self.manager.gconf.set_int("/apps/gtracker/interval",interval)
 
+      self.manager.interval = interval
+
       if len(username)>0 and len(password)>0 and (username!=self.manager.username or password!=self.manager.password):
          self.manager.username = username
          self.manager.password = password
-         self.manager.interval = interval
          gobject.idle_add(self.manager.check_stories)
       self.destroy()
 

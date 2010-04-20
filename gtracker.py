@@ -70,6 +70,7 @@ class Gtracker:
       self.stories   = {}
       self.working   = False
       self.stats     = {}
+      self.manual    = False
 
       self.interval   = self.gconf.get_int("/apps/gtracker/interval")
       if self.interval<1:
@@ -164,16 +165,23 @@ class Gtracker:
 
    def init(self):
       self.set_tooltip(_("Authenticating and verifying stories ..."))
+      self.checkItem.set_sensitive(False)
       if not self.have_authentication_info():
          self.show_auth_message()
          return
       self.check_stories()
+      self.checkItem.set_sensitive(True)
 
    def clear_menu(self):
       for menuitem in self.menu.get_children():
          self.menu.remove(menuitem)
 
    def check_stories(self):
+      if self.manual:
+         self.manual = False
+         self.schedule_next_check()
+         return
+
       if not self.have_authentication_info():
          self.show_auth_message()
          self.show_error(_("Please configure your username and password and try again"))
@@ -245,6 +253,10 @@ class Gtracker:
       self.set_tooltip(_("%d stories retrieved.") % count)
       self.blinking(False)
       self.working = False
+      self.schedule_next_check()
+
+   def schedule_next_check(self):
+      gobject.timeout_add(1000*60*self.interval,self.check_thread)
 
    def update_story_state_from_menu(self,widget,story):
       self.update_story_state(story,False)
@@ -375,6 +387,10 @@ class Gtracker:
       data.popup(None,None,None,3,0)
 
    def check_now(self,widget,data=None):
+      self.check_thread()
+      self.manual = True
+
+   def check_thread(self):
       t = InitThread(self)
       t.start()
 
