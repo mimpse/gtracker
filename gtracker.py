@@ -305,8 +305,6 @@ class Gtracker:
       
       # if not completed, try to complete now
       rst = self.pivotal.complete_task(task)
-      if rst and not silent:
-         self.show_info(_("Task '%s' marked as completed.") % task.description)
 
       # remove from menu
       task_menu_parent.remove(task_menu_item)
@@ -320,6 +318,14 @@ class Gtracker:
          story.menu_item.remove_submenu()
          story.menu_item.connect("activate",self.update_story_state_from_menu,story)
      
+      # start story, if status different from started
+      state = States.get_state(story.state)
+      if not state.started:
+         self.pivotal.update_story_state(story,"started")
+         story.menu_item.set_label(story.__str__())
+
+      if rst and not silent:
+         self.show_info(_("Task '%s' marked as completed.") % task.description)
       return rst
 
    def blinking(self,blink):
