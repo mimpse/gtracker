@@ -69,6 +69,7 @@ class Gtracker:
       self.projects  = {}
       self.stories   = {}
       self.working   = False
+      self.stats     = {}
 
       self.interval   = self.gconf.get_int("/apps/gtracker/interval")
       if self.interval<1:
@@ -129,7 +130,7 @@ class Gtracker:
    def make_stat_item(self):
       if self.statItem==None:
          self.statItem = gtk.MenuItem(_("Statistics"))
-         self.statItem.connect('activate', self.stats)
+         self.statItem.connect('activate', self.statistic)
       self.config_menu.append(self.statItem)
       return self.statItem
 
@@ -286,7 +287,25 @@ class Gtracker:
       if story.done:
          story.menu_item.set_sensitive(False)
       self.show_info(_("'%s' %s.") % (story.name,state_obj.past.lower()))
+
+      count = 0
+      key   = state_obj.past.lower()
+      try:
+         count = self.stats[key]
+         count += 1
+      except:
+         count = 1
+      self.stats[key] = count
       return True
+
+   def stats_str(self):
+      s = ""
+      for k,v in self.stats.items():
+         s += k.capitalize()+": "+str(v)+"\n"
+      return s
+
+   def statistic(self,widget):
+      self.show_info(_("About this session\n\nStarted on %s\n\n%s") % (self.started.strftime(_("%m/%d/%Y %H:%M:%S")),self.stats_str()))
 
    def complete_task_from_menu(self,widget,task):
       self.complete_task(task,False)
@@ -361,9 +380,6 @@ class Gtracker:
 
    def config(self, widget, data = None):
       ConfigWindow(self)
-
-   def stats(self,widget,data):
-      pass
 
    def about(self,widget,data=None):
       self.about = gtk.AboutDialog()
