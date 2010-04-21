@@ -34,6 +34,9 @@ class ConfigWindow(gtk.Window):
       self.multiline = gtk.CheckButton(_("Show stories using two lines"))
       self.multiline.set_active(self.config.multiline)
 
+      self.separator = gtk.CheckButton(_("Show separator between stories"))
+      self.separator.set_active(self.config.separator)
+
       showPasswd = gtk.CheckButton(_("Show password"));
       showPasswd.connect("toggled", self.show_passwd,showPasswd)
 
@@ -52,8 +55,9 @@ class ConfigWindow(gtk.Window):
       table.attach(intervalStr,0,1,2,3)
       table.attach(self.intervalTxt,1,2,2,3)
 
-      table.attach(self.multiline ,1,2,3,4)
-      table.attach(showPasswd,1,2,4,5)
+      table.attach(self.multiline,0,2,3,4)
+      table.attach(self.separator,0,2,4,5)
+      table.attach(showPasswd,0,2,5,6)
 
       table.attach(self.ok,0,1,6,7)
       table.attach(self.cancel,1,2,6,7)
@@ -69,13 +73,15 @@ class ConfigWindow(gtk.Window):
       password  = self.passTxt.get_text()
       interval  = int(self.intervalTxt.get_text())
       multiline = self.multiline.get_active()
+      separator = self.separator.get_active()
 
-      if not self.config.save(username,password,interval,multiline):
+      if not self.config.save(username,password,interval,multiline,separator):
          self.manager.show_error(_("Could not save configuration info!"))
          return False
 
       self.manager.interval = interval
       self.manager.config.multiline = multiline
+      self.manager.config.separator = separator
 
       if len(username)>0 and len(password)>0 and (username!=self.manager.username or password!=self.manager.password):
          self.manager.username = username

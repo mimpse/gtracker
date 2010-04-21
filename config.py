@@ -13,6 +13,7 @@ class Config:
       self.username  = None
       self.password  = None
       self.multiline = False
+      self.separator = False
       self.gconf     = gconf.client_get_default()
       self.appname   = "Gtracker"
 
@@ -20,6 +21,7 @@ class Config:
       self.password_key   = "/apps/gtracker/password"
       self.interval_key   = "/apps/gtracker/interval"
       self.multi_key      = "/apps/gtracker/multiline"
+      self.sep_key        = "/apps/gtracker/separator"
 
       self.interval = self.gconf.get_int(self.interval_key)
       if self.interval<1:
@@ -30,6 +32,11 @@ class Config:
       if self.multiline==None:
          self.multiline = True
          self.gconf.set_bool(self.multi_key,self.multiline)
+
+      self.separator = self.gconf.get_bool(self.sep_key)
+      if self.separator==None:
+         self.separator = True
+         self.gconf.set_bool(self.sep_key,self.separator)
 
       if keyring:
          try:
@@ -68,11 +75,14 @@ class Config:
          self.gconf.unset(self.username_key)
          self.gconf.unset(self.password_key)
 
-   def save(self,username,password,interval,multi=True):
+   def save(self,username,password,interval,multi=True,separator=False):
       try:
          self.gconf.set_int(self.interval_key,interval)
          self.gconf.set_bool(self.multi_key,multi)
+         self.gconf.set_bool(self.sep_key,separator)
+
          self.multiline = multi
+         self.separator = separator
 
          if not keyring:
             self.gconf.set_string(self.username_key,username)

@@ -247,6 +247,8 @@ class Gtracker:
                menu_item.connect("activate",self.update_story_state_from_menu,story)
 
             submenu.append(menu_item)
+            if self.config.separator and story!=stories[-1]:
+               submenu.append(gtk.SeparatorMenuItem())
             count += 1
 
       self.set_tooltip(_("%d stories retrieved.") % count)
