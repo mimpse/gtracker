@@ -41,7 +41,7 @@ class Config:
             try:
                names.index(self.appname)
             except:
-               gk.create_sync(self.appname,"login")
+               gk.create_sync(self.appname,"")
 
             keys = gk.list_item_ids_sync(self.appname)
             if len(keys)==1:
