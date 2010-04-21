@@ -15,7 +15,6 @@ import glob
 import time
 import gobject
 import pygtk
-import gconf
 import locale
 import gettext
 import datetime
@@ -25,6 +24,7 @@ pygtk.require('2.0')
 
 from configwindow import *
 from pivotal import *
+from config import *
 from story import *
 from state import *
 from task import *
@@ -61,7 +61,6 @@ class InitThread(threading.Thread):
 class Gtracker:
    
    def __init__(self):
-      self.gconf     = gconf.client_get_default()
       self.started   = datetime.datetime.now()
       self.username  = None
       self.password  = None
@@ -71,21 +70,10 @@ class Gtracker:
       self.working   = False
       self.stats     = {}
       self.manual    = False
-
-      self.interval   = self.gconf.get_int("/apps/gtracker/interval")
-      if self.interval<1:
-         self.interval = 15
-         self.gconf.set_int("/apps/gtracker/interval",self.interval)
-
-      self.username   = self.gconf.get_string("/apps/gtracker/username")
-      if self.username==None or len(self.username)<1:
-         self.username = ""
-         self.gconf.set_string("/apps/gtracker/username","")
-
-      self.password  = self.gconf.get_string("/apps/gtracker/password")
-      if self.password==None or len(self.password)<1:
-         self.password = ""
-         self.gconf.set_string("/apps/gtracker/password",self.password)
+      self.config    = Config()
+      self.interval  = self.config.interval
+      self.username  = self.config.username
+      self.password  = self.config.password
 
       self.menu         = gtk.Menu()
       self.config_menu  = gtk.Menu()
@@ -116,8 +104,8 @@ class Gtracker:
 
    def make_config_item(self):
       if self.configItem==None:
-         self.configItem = gtk.MenuItem(_("Authentication"))
-         self.configItem.connect('activate', self.config)
+         self.configItem = gtk.MenuItem(_("Configuration"))
+         self.configItem.connect('activate', self.config_from_menu)
       self.config_menu.append(self.configItem)
       return self.configItem
 
@@ -394,7 +382,7 @@ class Gtracker:
       t = InitThread(self)
       t.start()
 
-   def config(self, widget, data = None):
+   def config_from_menu(self, widget, data = None):
       ConfigWindow(self)
 
    def about(self,widget,data=None):

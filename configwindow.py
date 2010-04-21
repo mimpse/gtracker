@@ -3,6 +3,8 @@ import pygtk
 import gobject
 import gettext
 
+from config import *
+
 _ = gettext.gettext
 
 class ConfigWindow(gtk.Window):
@@ -12,22 +14,22 @@ class ConfigWindow(gtk.Window):
       self.set_modal(True)
    
       self.manager      = manager
-      self.gconf        = self.manager.gconf
+      self.config       = Config()
       self.resp         = None
       table             = gtk.Table(2,2,True)
 
       userStr         = gtk.Label(_("Username"))
       self.userTxt    = gtk.Entry()
-      self.userTxt.set_text(str(self.manager.username))
+      self.userTxt.set_text(str(self.config.username))
 
       passStr         = gtk.Label(_("Password"))
       self.passTxt    = gtk.Entry()
       self.passTxt.set_visibility(False)
-      self.passTxt.set_text(str(self.manager.password))
+      self.passTxt.set_text(str(self.config.password))
 
       intervalStr        = gtk.Label(_("Interval"))
       self.intervalTxt   = gtk.Entry()
-      self.intervalTxt.set_text(str(self.manager.interval))
+      self.intervalTxt.set_text(str(self.config.interval))
 
       showPasswd = gtk.CheckButton(_("Show password"));
       showPasswd.connect("toggled", self.show_passwd,showPasswd)
@@ -59,22 +61,23 @@ class ConfigWindow(gtk.Window):
       self.passTxt.set_visibility(data.get_active())
 
    def save(self,widget):
-      username = self.userTxt.get_text()
-      self.manager.gconf.set_string("/apps/gtracker/username",username)
+      username  = self.userTxt.get_text()
+      password  = self.passTxt.get_text()
+      interval  = int(self.intervalTxt.get_text())
 
-      password = self.passTxt.get_text()
-      self.manager.gconf.set_string("/apps/gtracker/password",password)
-
-      interval = int(self.intervalTxt.get_text())
-      self.manager.gconf.set_int("/apps/gtracker/interval",interval)
+      if not self.config.save(username,password,interval):
+         self.manager.show_error(_("Could not save configuration info!"))
+         return False
 
       self.manager.interval = interval
 
       if len(username)>0 and len(password)>0 and (username!=self.manager.username or password!=self.manager.password):
          self.manager.username = username
          self.manager.password = password
-         gobject.idle_add(self.manager.check_stories)
+         gobject.idle_add(self.manager.check_thread)
+
       self.destroy()
+      return True
 
    def dontsave(self,widget):
       self.destroy()
