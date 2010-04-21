@@ -74,6 +74,7 @@ class Gtracker:
       self.interval  = self.config.interval
       self.username  = self.config.username
       self.password  = self.config.password
+      self.pivotal   = Pivotal(self)
 
       self.menu         = gtk.Menu()
       self.config_menu  = gtk.Menu()
@@ -160,10 +161,6 @@ class Gtracker:
       self.check_stories()
       self.checkItem.set_sensitive(True)
 
-   def clear_menu(self):
-      for menuitem in self.menu.get_children():
-         self.menu.remove(menuitem)
-
    def check_stories(self):
       if self.manual:
          self.manual = False
@@ -177,10 +174,8 @@ class Gtracker:
 
       self.working = True
       self.blinking(True)
-      self.clear_menu()
 
       try:
-         self.pivotal = Pivotal(self)
          if not self.pivotal.auth():
             self.set_tooltip(_("Could not authenticate. Please verify your username and password and try again."))
             self.working = False
@@ -196,21 +191,36 @@ class Gtracker:
 
       for proj in projs:
          proj_id, proj_name, proj_last = proj
-         self.projects[proj_id] = [proj_name,proj_last]
+         proj_found = None
 
+         # if there's already a project, check the last activity time
+         if proj_id in self.projects:
+            proj_found = self.projects[proj_id]
+            if proj_found["last_activity"]==proj_last:
+               continue
+
+         # check if there are stories for this project
          self.set_tooltip(_("Retrieving stories for project %s ...") % proj_name)
          stories = self.pivotal.get_stories(proj_id)
-
          if len(stories)<1:
             continue
 
-         self.stories[proj_id] = {}
+         # if there isn't a project, we need to create a dictionary entry
+         proj_item = None
+         if proj_found==None:
+            proj_item = gtk.MenuItem(proj_name,False)
+            self.menu.append(proj_item)
+         # if there is a project with some activity, clear the stories submenu             
+         else:
+            proj_found["menu_item"].remove_submenu()
+            proj_item = proj_found["menu_item"]
 
-         proj_item = gtk.MenuItem(proj_name,False)
-         self.menu.append(proj_item)
+         # update project info
+         self.projects[proj_id] = {"name":proj_name,"menu_item":proj_item,"last_activity":proj_last}
 
          submenu = gtk.Menu()
          proj_item.set_submenu(submenu)
+         self.stories[proj_id] = {}
 
          for story in stories:
             self.stories[proj_id][story.id] = story             
