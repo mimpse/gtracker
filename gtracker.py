@@ -218,6 +218,7 @@ class Gtracker:
             story.tasks = tasks
             task_size   = len(tasks)
 
+            story.multiline = self.config.multiline
             menu_item = gtk.MenuItem(("%s" % story),False)
             story.menu_item = menu_item
 

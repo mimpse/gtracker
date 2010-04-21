@@ -14,6 +14,7 @@ class Story:
       self.tasks     = []
       self.menu_item = menu_item
       self.done      = False
+      self.multiline = True
 
    def __str__(self):
       next_states = self.next_states()
@@ -25,13 +26,14 @@ class Story:
          state_desc  = "Done"
          self.done   = True
 
-      name = self.name.replace(self.name[0],self.name[0].lower(),1)
+      name     = self.name.replace(self.name[0],self.name[0].lower(),1)
+      points   = _("Unestimated") if int(self.points)<0 else ("%s points" % self.points)
+      multi    = "\n" if self.multiline else " - "
 
-      points = _("Unestimated") if int(self.points)<0 else ("%s points" % self.points)
       if len(self.tasks)>0:
-         return _("%s %s (%s) (%s) (%d tasks)") % (state_desc,name,points,self.owner,len(self.tasks))
+         return _("%s %s%s%s - %s - %d tasks") % (state_desc,name,multi,points,self.owner,len(self.tasks))
       else:
-         return _("%s %s (%s) (%s)") % (state_desc,name,points,self.owner)
+         return _("%s %s%s%s - %s") % (state_desc,name,multi,points,self.owner)
 
    def next_states(self):
       return States.get_state(self.state).next_states
