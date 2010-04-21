@@ -1,18 +1,19 @@
 import glib
 import gconf
 
-keyring = False
 try:
-   import  gnomekeyring as gk
-   #keyring = True
+   import gnomekeyring as gk
+   keyring = True
 except:
-   pass
+   keyring = False
 
 class Config:
    def __init__(self):
+      global keyring
       self.username  = None
       self.password  = None
       self.gconf     = gconf.client_get_default()
+      self.appname   = "Gtracker"
 
       self.username_key   = "/apps/gtracker/username"
       self.password_key   = "/apps/gtracker/password"
@@ -22,6 +23,29 @@ class Config:
       if self.interval<1:
          self.interval = 15
          self.gconf.set_int(self.interval_key,self.interval)
+
+      if keyring:
+         try:
+            glib.set_application_name(self.appname)
+         except:
+            pass
+         if gk.is_available():
+            names = gk.list_keyring_names_sync()
+            try:
+               names.index(self.appname)
+            except:
+               gk.create_sync(self.appname,"login")
+
+            keys = gk.list_item_ids_sync(self.appname)
+            if len(keys)==1:
+               info = gk.item_get_info_sync(self.appname,keys[0])
+               self.username  = info.get_display_name() 
+               self.password  = info.get_secret()
+            else:
+               self.username  = ""
+               self.password  = ""
+         else:
+            keyring = False
 
       if not keyring:
          self.username = self.gconf.get_string(self.username_key)
@@ -36,8 +60,6 @@ class Config:
       else:
          self.gconf.unset(self.username_key)
          self.gconf.unset(self.password_key)
-         self.gconf.unset(self.interval_key)
-         glib.set_application_name("Gtracker")
 
    def save(self,username,password,interval):
       try:
@@ -47,7 +69,11 @@ class Config:
             self.gconf.set_string(self.username_key,username)
             self.gconf.set_string(self.password_key,password)
          else:
-            pass
-      except:
+            keys = gk.list_item_ids_sync(self.appname)
+            if len(keys)>0:
+               for key in keys:
+                  gk.item_delete_sync(self.appname,2L)
+            gk.item_create_sync(self.appname,gk.ITEM_GENERIC_SECRET,username,{"username":username},password,True)
+      except Exception as exc:
          return False
       return True
