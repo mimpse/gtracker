@@ -39,7 +39,8 @@ class Pivotal:
       for proj in projs:
          id    = proj.getElementsByTagName("id")[0].firstChild.data
          name  = proj.getElementsByTagName("name")[0].firstChild.data
-         data.append([id,name])
+         last  = proj.getElementsByTagName("last_activity_at")[0].firstChild.data
+         data.append([id,name,last])
       return data         
 
    def get_story(self,story):

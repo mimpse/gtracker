@@ -195,8 +195,8 @@ class Gtracker:
       count = 0
 
       for proj in projs:
-         proj_id, proj_name = proj
-         self.projects[proj_id] = proj_name
+         proj_id, proj_name, proj_last = proj
+         self.projects[proj_id] = [proj_name,proj_last]
 
          self.set_tooltip(_("Retrieving stories for project %s ...") % proj_name)
          stories = self.pivotal.get_stories(proj_id)
