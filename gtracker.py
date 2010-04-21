@@ -36,7 +36,7 @@ except:
    notify = 0
 
 try:
-   import dbus, dbus.glib
+   from dbus_server import *
    dbus_enabled = 1
 except:
    dbus_enabled = 0
@@ -100,6 +100,12 @@ class Gtracker:
 
       t = InitThread(self)
       t.start()
+
+      if dbus_enabled>0:
+         bus = dbus.SessionBus()
+         bus_name = dbus.service.BusName('com.Gtracker',bus=bus)
+         bus_obj = DbusServer(bus_name,'/')
+         bus_obj.set_manager(self)
 
       gtk.main()
 
@@ -432,6 +438,25 @@ class Gtracker:
       rsp = dialog.run()
       dialog.destroy()
       return rsp
+
+   # dbus
+   def story_count(self):
+      count = 0
+      for proj_id in self.stories:
+         count += len(self.stories[proj_id])
+      return count 
+
+   def get_story(self,pos):
+      all = []
+      for proj_id,stories in self.stories.items():
+         proj = self.projects[proj_id]["name"]
+         for story_id,story in stories.items():
+            id = str(int(story.id)*-1) if len(story.tasks)>0 else story.id
+            all.append([id,proj,story.name,story.points])
+
+      if len(all)<pos:
+         return [None,None,None,None]
+      return all[pos]
 
 if __name__ == "__main__":
    gtracker = Gtracker()
