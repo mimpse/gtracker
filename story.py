@@ -25,11 +25,13 @@ class Story:
          state_desc  = "Done"
          self.done   = True
 
+      name = self.name.replace(self.name[0],self.name[0].lower(),1)
+
       points = _("Unestimated") if int(self.points)<0 else ("%s points" % self.points)
       if len(self.tasks)>0:
-         return _("%s: %s (%s) (%s) (%d tasks)") % (state_desc,self.name,points,self.owner,len(self.tasks))
+         return _("%s %s (%s) (%s) (%d tasks)") % (state_desc,name,points,self.owner,len(self.tasks))
       else:
-         return _("%s: %s (%s) (%s)") % (state_desc,self.name,points,self.owner)
+         return _("%s %s (%s) (%s)") % (state_desc,name,points,self.owner)
 
    def next_states(self):
       return States.get_state(self.state).next_states
