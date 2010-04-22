@@ -451,8 +451,13 @@ class Gtracker:
       for proj_id,stories in self.stories.items():
          proj = self.projects[proj_id]["name"]
          for story_id,story in stories.items():
-            id = str(int(story.id)*-1) if len(story.tasks)>0 else story.id
-            all.append([id,proj,story.name,story.points])
+            tasks = story.tasks
+            if len(tasks)<1:
+               all.append([story.id,proj,story.name,story.points,"",""])
+               continue
+
+            for task in tasks:
+               all.append([story.id,proj,story.name,story.points,task.id,task.description])
 
       if len(all)<pos:
          return [None,None,None,None]

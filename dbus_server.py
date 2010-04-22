@@ -8,7 +8,7 @@ class DbusServer(dbus.service.Object):
    def story_count(self):
       return self.manager.story_count()
 
-   @dbus.service.method(dbus_interface="com.Gtracker.Interface",in_signature="",out_signature="ssss")
+   @dbus.service.method(dbus_interface="com.Gtracker.Interface",in_signature="",out_signature="ssssss")
    def get_story(self,pos):
       return self.manager.get_story(pos)
 
