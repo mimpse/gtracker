@@ -326,6 +326,14 @@ class Gtracker:
    def statistic(self,widget):
       self.show_info(_("About this session\n\nStarted on %s\n\n%s") % (self.started.strftime(_("%m/%d/%Y %H:%M:%S")),self.stats_str()))
 
+   def find_task_by_id(self,id):
+      for proj_id,stories in self.stories.items():
+         for story_id,story in stories.items():
+            for task in story.tasks:
+               if task.id==id:
+                  return task
+      return None               
+
    def complete_task_from_menu(self,widget,task):
       self.complete_task(task,False)
 
