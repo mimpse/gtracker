@@ -305,7 +305,8 @@ class Gtracker:
       story.menu_item.set_label(story.__str__())
       if story.done:
          story.menu_item.set_sensitive(False)
-      self.show_info(_("'%s' %s.") % (story.name,state_obj.past.lower()))
+      if not silent:
+         self.show_info(_("'%s' %s.") % (story.name,state_obj.past.lower()))
 
       count = 0
       key   = state_obj.past.lower()
@@ -333,6 +334,13 @@ class Gtracker:
                if task.id==id:
                   return task
       return None               
+
+   def find_story_by_id(self,id):
+      for proj_id,stories in self.stories.items():
+         for story_id,story in stories.items():
+            if story.id==id:
+               return story
+      return None            
 
    def complete_task_from_menu(self,widget,task):
       self.complete_task(task,False)
