@@ -1,0 +1,242 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-22 23:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: configwindow.py:13
+msgid "Gtracker configuration"
+msgstr ""
+
+#: configwindow.py:21
+msgid "Username"
+msgstr ""
+
+#: configwindow.py:25
+msgid "Password"
+msgstr ""
+
+#: configwindow.py:30
+msgid "Interval"
+msgstr ""
+
+#: configwindow.py:34
+msgid "Show stories using two lines"
+msgstr ""
+
+#: configwindow.py:37
+msgid "Show separator between stories"
+msgstr ""
+
+#: configwindow.py:40
+msgid "Show password"
+msgstr ""
+
+#: configwindow.py:43
+msgid "Ok"
+msgstr ""
+
+#: configwindow.py:46 gtracker.py:274
+msgid "Cancel"
+msgstr ""
+
+#: configwindow.py:79
+msgid "Could not save configuration info!"
+msgstr ""
+
+#: gtracker.py:114
+msgid "Configuration"
+msgstr ""
+
+#: gtracker.py:121
+msgid "Check now!"
+msgstr ""
+
+#: gtracker.py:128
+msgid "Statistics"
+msgstr ""
+
+#: gtracker.py:135
+msgid "About"
+msgstr ""
+
+#: gtracker.py:142
+msgid "Quit"
+msgstr ""
+
+#: gtracker.py:158 gtracker.py:178
+msgid "Please configure your username and password and try again"
+msgstr ""
+
+#: gtracker.py:162
+msgid "Authenticating and verifying stories ..."
+msgstr ""
+
+#: gtracker.py:186
+msgid ""
+"Could not authenticate. Please verify your username and password and try "
+"again."
+msgstr ""
+
+#: gtracker.py:190
+msgid "Error authenticating. Please try again."
+msgstr ""
+
+#: gtracker.py:194
+msgid "Retrieving projects info ..."
+msgstr ""
+
+#: gtracker.py:209
+#, python-format
+msgid "Retrieving stories for project %s ..."
+msgstr ""
+
+#: gtracker.py:260
+#, python-format
+msgid "%d stories retrieved."
+msgstr ""
+
+#: gtracker.py:274
+msgid "Please choose"
+msgstr ""
+
+#: gtracker.py:275
+msgid ""
+"Please choose what you want\n"
+"to do with your story."
+msgstr ""
+
+#: gtracker.py:290
+msgid "Story update canceled!"
+msgstr ""
+
+#: gtracker.py:299
+#, python-format
+msgid "Are you sure you want to %(verb)s '%(name)s'?"
+msgstr ""
+
+#: gtracker.py:304
+#, python-format
+msgid "Could not start to work on '%s'"
+msgstr ""
+
+#: gtracker.py:311
+#, python-format
+msgid "'%(name)s' %(verb)s."
+msgstr ""
+
+#: gtracker.py:330
+#, python-format
+msgid ""
+"About this session\n"
+"\n"
+"Started on %(start)s\n"
+"\n"
+"%(str)s"
+msgstr ""
+
+#: gtracker.py:330
+msgid "%m/%d/%Y %H:%M:%S"
+msgstr ""
+
+#: gtracker.py:351
+#, python-format
+msgid "Are you sure you want to mark task '%s' as completed?"
+msgstr ""
+
+#: gtracker.py:384
+#, python-format
+msgid "Task '%s' marked as completed."
+msgstr ""
+
+#: state.py:16 state.py:17
+msgid "Unscheduling"
+msgstr ""
+
+#: state.py:16 state.py:17
+msgid "Voided"
+msgstr ""
+
+#: state.py:18
+msgid "Start"
+msgstr ""
+
+#: state.py:18
+msgid "Started"
+msgstr ""
+
+#: state.py:19
+msgid "Finish"
+msgstr ""
+
+#: state.py:19
+msgid "Finished"
+msgstr ""
+
+#: state.py:20
+msgid "Deliver"
+msgstr ""
+
+#: state.py:20
+msgid "Delivered"
+msgstr ""
+
+#: state.py:21
+msgid "Accept"
+msgstr ""
+
+#: state.py:21
+msgid "Accepted"
+msgstr ""
+
+#: state.py:22
+msgid "Reject"
+msgstr ""
+
+#: state.py:22
+msgid "Rejected"
+msgstr ""
+
+#: story.py:21
+msgid " or "
+msgstr ""
+
+#: story.py:26
+msgid "Done"
+msgstr ""
+
+#: story.py:30
+msgid "Unestimated"
+msgstr ""
+
+#: story.py:30
+#, python-format
+msgid "%s points"
+msgstr ""
+
+#: story.py:34
+#, python-format
+msgid "%(desc)s %(name)s%(multi)s%(points)s - %(owner)s - %(tasks_len)d tasks"
+msgstr ""
+
+#: story.py:36
+#, python-format
+msgid "%(desc)s %(name)s%(multi)s%(points)s - %(owner)s"
+msgstr ""
+
+#: task.py:17
+#, python-format
+msgid "Task %s"
+msgstr ""

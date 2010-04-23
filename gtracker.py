@@ -271,7 +271,7 @@ class Gtracker:
    def choose_from_states(self,states):
       image = gtk.Image()
       image.set_from_file(self.get_icon("gtracker.png"))
-      dialog = gtk.Dialog(_("Please choose"),None,gtk.DIALOG_MODAL,(states[0].verb,1000,states[1].verb,1001,_("Cancel"),gtk.RESPONSE_CANCEL))
+      dialog = gtk.Dialog(_("Please choose"),None,gtk.DIALOG_MODAL,(_(states[0].verb),1000,_(states[1].verb),1001,_("Cancel"),gtk.RESPONSE_CANCEL))
       label = gtk.Label(_("Please choose what you want\nto do with your story."))
       dialog.vbox.pack_start(label,padding=10,expand=True,fill=True)
       dialog.vbox.pack_end(image,padding=10)
@@ -293,8 +293,10 @@ class Gtracker:
       else:
          next_state = next_states[0]
 
-      state_obj = States.get_state(next_state)
-      if not silent and self.ask(_("Are you sure you want to %s '%s'?") % (state_obj.verb.lower(),story.name))!=gtk.RESPONSE_YES:
+      state_obj      = States.get_state(next_state)
+      present_verb   = _(state_obj.verb)
+      past_verb      = _(state_obj.past)
+      if not silent and self.ask(_("Are you sure you want to %(verb)s '%(name)s'?") % {"verb":present_verb.lower(),"name":story.name})!=gtk.RESPONSE_YES:
          return False
 
       rsp = self.pivotal.update_story_state(story,next_state)
@@ -306,10 +308,10 @@ class Gtracker:
       if story.done:
          story.menu_item.set_sensitive(False)
       if not silent:
-         self.show_info(_("'%s' %s.") % (story.name,state_obj.past.lower()))
+         self.show_info(_("'%(name)s' %(verb)s.") % {"name":story.name,"verb":past_verb.lower()})
 
       count = 0
-      key   = state_obj.past.lower()
+      key   = past_verb.lower()
       try:
          count = self.stats[key]
          count += 1
@@ -325,7 +327,7 @@ class Gtracker:
       return s
 
    def statistic(self,widget):
-      self.show_info(_("About this session\n\nStarted on %s\n\n%s") % (self.started.strftime(_("%m/%d/%Y %H:%M:%S")),self.stats_str()))
+      self.show_info(_("About this session\n\nStarted on %(start)s\n\n%(str)s") % {"start":self.started.strftime(_("%m/%d/%Y %H:%M:%S")),"str":self.stats_str()})
 
    def find_task_by_id(self,id):
       for proj_id,stories in self.stories.items():

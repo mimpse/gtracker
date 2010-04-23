@@ -18,22 +18,22 @@ class Story:
 
    def __str__(self):
       next_states = self.next_states()
-      state_desc  = _(" or ").join([States.get_state(st).verb for st in next_states])
+      state_desc  = _(" or ").join([_(States.get_state(st).verb) for st in next_states])
       state_desc  = state_desc.lower().capitalize()
 
       # nothing more to do here
       if len(state_desc)<1:
-         state_desc  = "Done"
+         state_desc  = _("Done")
          self.done   = True
 
       name     = self.name.replace(self.name[0],self.name[0].lower(),1)
-      points   = _("Unestimated") if int(self.points)<0 else ("%s points" % self.points)
+      points   = _("Unestimated") if int(self.points)<0 else (_("%s points") % self.points)
       multi    = "\n" if self.multiline else " - "
 
       if len(self.tasks)>0:
-         return _("%s %s%s%s - %s - %d tasks") % (state_desc,name,multi,points,self.owner,len(self.tasks))
+         return _("%(desc)s %(name)s%(multi)s%(points)s - %(owner)s - %(tasks_len)d tasks") % {"desc":state_desc,"name":name,"multi":multi,"points":points,"owner":self.owner,"tasks_len":len(self.tasks)}
       else:
-         return _("%s %s%s%s - %s") % (state_desc,name,multi,points,self.owner)
+         return _("%(desc)s %(name)s%(multi)s%(points)s - %(owner)s") % {"desc":state_desc,"name":name,"multi":multi,"points":points,"owner":self.owner}
 
    def next_states(self):
       return States.get_state(self.state).next_states
