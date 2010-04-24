@@ -66,7 +66,11 @@ class Pivotal:
          return data
 
       for story in stories:
-         data.append(self.make_story(proj_id,story))
+         if story==None:
+            continue
+         st = self.make_story(proj_id,story)
+         if st!=None:
+            data.append(st)
       return data         
 
    def get_task(self,data):
@@ -128,13 +132,26 @@ class Pivotal:
          id       = data.getElementsByTagName("id")[0].firstChild.data
          name     = data.getElementsByTagName("name")[0].firstChild.data
          state    = data.getElementsByTagName("current_state")[0].firstChild.data
-         points   = data.getElementsByTagName("estimate")[0].firstChild.data
+         points   = data.getElementsByTagName("estimate")
+         type     = data.getElementsByTagName("story_type")
          owner    = data.getElementsByTagName("owned_by")
+
+         if len(points)>0:
+            points = points[0].firstChild.data
+         else:
+            points = 0
+         
+         if len(type)>0:
+            type = type[0].firstChild.data
+         else:
+            type = "undertermined"
+
          if len(owner)>0:
             owner = owner[0].firstChild.data
          else:
             owner = "nobody"
-         return Story(proj_id,id,name,state,owner,points)
+         
+         return Story(proj_id,id,name,state,owner,points,type)
       except Exception as exc:
          print "make_story: %s" % exc
          return None

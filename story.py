@@ -4,13 +4,14 @@ import gettext
 _ = gettext.gettext
 
 class Story:
-   def __init__(self,proj_id,id,name,state,owner,points=0,menu_item=None):
+   def __init__(self,proj_id,id,name,state,owner,points=0,type="undertermined",menu_item=None):
       self.proj_id   = proj_id
       self.id        = id
       self.name      = name
       self.state     = state
       self.owner     = owner
       self.points    = points
+      self.type      = type
       self.tasks     = []
       self.menu_item = menu_item
       self.done      = False
@@ -29,11 +30,13 @@ class Story:
       name     = self.name.replace(self.name[0],self.name[0].lower(),1)
       points   = _("Unestimated") if int(self.points)<0 else (_("%s points") % self.points)
       multi    = "\n" if self.multiline else " - "
+      type     = _(self.type).lower().capitalize()
+      values   = {"desc":state_desc,"name":name,"multi":multi,"points":points,"owner":self.owner,"tasks_len":len(self.tasks),"type":type}
 
       if len(self.tasks)>0:
-         return _("%(desc)s %(name)s%(multi)s%(points)s - %(owner)s - %(tasks_len)d tasks") % {"desc":state_desc,"name":name,"multi":multi,"points":points,"owner":self.owner,"tasks_len":len(self.tasks)}
+         return _("%(desc)s %(name)s%(multi)s%(type)s - s%(points)s - %(owner)s - %(tasks_len)d tasks") % values
       else:
-         return _("%(desc)s %(name)s%(multi)s%(points)s - %(owner)s") % {"desc":state_desc,"name":name,"multi":multi,"points":points,"owner":self.owner}
+         return _("%(desc)s %(name)s%(multi)s%(type)s - %(points)s - %(owner)s") % values
 
    def next_states(self):
       return States.get_state(self.state).next_states
