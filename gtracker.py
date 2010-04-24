@@ -208,7 +208,12 @@ class Gtracker:
          # check if there are stories for this project
          self.set_tooltip(_("Retrieving stories for project %s ...") % proj_name)
          stories = self.pivotal.get_stories(proj_id)
+
+         # no stories, move on
          if len(stories)<1:
+            # but if there is a menu item, remove it
+            if proj_found!=None and proj_found["menu_item"]!=None:
+               self.menu.remove(proj_found["menu_item"])
             continue
 
          # if there isn't a project, we need to create a dictionary entry
