@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-22 23:11-0300\n"
+"POT-Creation-Date: 2010-04-23 23:57-0300\n"
 "PO-Revision-Date: 2010-04-22 22:37-0300\n"
 "Last-Translator: Eustaquio Rangel <eustaquiorangel@gmail.com>\n"
 "Language-Team: Brazilian Portuguese\n"
@@ -16,46 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-
-#: configwindow.py:13
-msgid "Gtracker configuration"
-msgstr "Configuração do Gtracker"
-
-#: configwindow.py:21
-msgid "Username"
-msgstr "Nome de usuário"
-
-#: configwindow.py:25
-msgid "Password"
-msgstr "Senha"
-
-#: configwindow.py:30
-msgid "Interval"
-msgstr "Intervalo"
-
-#: configwindow.py:34
-msgid "Show stories using two lines"
-msgstr "Mostrar histórias usando duas linhas"
-
-#: configwindow.py:37
-msgid "Show separator between stories"
-msgstr "Mostrar separador entre as histórias"
-
-#: configwindow.py:40
-msgid "Show password"
-msgstr "Mostrar a senha"
-
-#: configwindow.py:43
-msgid "Ok"
-msgstr "Ok"
-
-#: configwindow.py:46 gtracker.py:274
-msgid "Cancel"
-msgstr "Cancela"
-
-#: configwindow.py:79
-msgid "Could not save configuration info!"
-msgstr "Não consegui salvar as informações de configuração!"
 
 #: gtracker.py:114
 msgid "Configuration"
@@ -106,16 +66,20 @@ msgstr "Recuperando informações dos projetos ..."
 msgid "Retrieving stories for project %s ..."
 msgstr "Recuperando histórias para o projeto %s ..."
 
-#: gtracker.py:260
+#: gtracker.py:265
 #, python-format
 msgid "%d stories retrieved."
 msgstr "%d histórias recuperadas."
 
-#: gtracker.py:274
+#: gtracker.py:279
 msgid "Please choose"
 msgstr "Por favor escolha"
 
-#: gtracker.py:275
+#: gtracker.py:279 configwindow.py:46
+msgid "Cancel"
+msgstr "Cancela"
+
+#: gtracker.py:280
 msgid ""
 "Please choose what you want\n"
 "to do with your story."
@@ -123,26 +87,26 @@ msgstr ""
 "Por favor escolha o que deseja\n"
 "fazer com sua história."
 
-#: gtracker.py:290
+#: gtracker.py:295
 msgid "Story update canceled!"
 msgstr "Atualização de história cancelada!"
 
-#: gtracker.py:299
+#: gtracker.py:304
 #, python-format
 msgid "Are you sure you want to %(verb)s '%(name)s'?"
 msgstr "Tem certeza que deseja %(verb)s '%(name)s'?"
 
-#: gtracker.py:304
+#: gtracker.py:309
 #, python-format
 msgid "Could not start to work on '%s'"
 msgstr "Não consegui começar a trabalhar em '%s'"
 
-#: gtracker.py:311
+#: gtracker.py:316
 #, python-format
 msgid "'%(name)s' %(verb)s."
 msgstr "'%(name)s' %(verb)s."
 
-#: gtracker.py:330
+#: gtracker.py:335
 #, python-format
 msgid ""
 "About this session\n"
@@ -157,19 +121,55 @@ msgstr ""
 "\n"
 "%(str)s"
 
-#: gtracker.py:330
+#: gtracker.py:335
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d/%m/%Y %H:%M:%S"
 
-#: gtracker.py:351
+#: gtracker.py:356
 #, python-format
 msgid "Are you sure you want to mark task '%s' as completed?"
 msgstr "Tem certeza que deseja marcar a tarefa '%s' como completa?"
 
-#: gtracker.py:384
+#: gtracker.py:389
 #, python-format
 msgid "Task '%s' marked as completed."
 msgstr "Tarefa '%s' marcada como completa."
+
+#: configwindow.py:13
+msgid "Gtracker configuration"
+msgstr "Configuração do Gtracker"
+
+#: configwindow.py:21
+msgid "Username"
+msgstr "Nome de usuário"
+
+#: configwindow.py:25
+msgid "Password"
+msgstr "Senha"
+
+#: configwindow.py:30
+msgid "Interval"
+msgstr "Intervalo"
+
+#: configwindow.py:34
+msgid "Show stories using two lines"
+msgstr "Mostrar histórias usando duas linhas"
+
+#: configwindow.py:37
+msgid "Show separator between stories"
+msgstr "Mostrar separador entre as histórias"
+
+#: configwindow.py:40
+msgid "Show password"
+msgstr "Mostrar a senha"
+
+#: configwindow.py:43
+msgid "Ok"
+msgstr "Ok"
+
+#: configwindow.py:79
+msgid "Could not save configuration info!"
+msgstr "Não consegui salvar as informações de configuração!"
 
 #: state.py:16 state.py:17
 msgid "Unscheduling"
@@ -219,35 +219,37 @@ msgstr "Rejeitar"
 msgid "Rejected"
 msgstr "Rejeitada"
 
-#: story.py:21
-msgid " or "
-msgstr " ou "
-
-#: story.py:26
-msgid "Done"
-msgstr "Encerrada"
-
-#: story.py:30
-msgid "Unestimated"
-msgstr "Sem estimativa"
-
-#: story.py:30
-#, python-format
-msgid "%s points"
-msgstr "%s pontos"
-
-#: story.py:34
-#, python-format
-msgid "%(desc)s %(name)s%(multi)s%(points)s - %(owner)s - %(tasks_len)d tasks"
-msgstr ""
-"%(desc)s %(name)s%(multi)s%(points)s - %(owner)s - %(tasks_len)d tarefas"
-
-#: story.py:36
-#, python-format
-msgid "%(desc)s %(name)s%(multi)s%(points)s - %(owner)s"
-msgstr "%(desc)s %(name)s%(multi)s%(points)s - %(owner)s"
-
 #: task.py:17
 #, python-format
 msgid "Task %s"
 msgstr "Tarefa %s"
+
+#: story.py:22
+msgid " or "
+msgstr " ou "
+
+#: story.py:27
+msgid "Done"
+msgstr "Encerrada"
+
+#: story.py:31
+msgid "Unestimated"
+msgstr "Sem estimativa"
+
+#: story.py:31
+#, python-format
+msgid "%s points"
+msgstr "%s pontos"
+
+#: story.py:37
+#, fuzzy, python-format
+msgid ""
+"%(desc)s %(name)s%(multi)s%(type)s - s%(points)s - %(owner)s - %(tasks_len)d "
+"tasks"
+msgstr ""
+"%(desc)s %(name)s%(multi)s%(type)s - s%(points)s - %(owner)s - %(tasks_len)d tarefas"
+
+#: story.py:39
+#, fuzzy, python-format
+msgid "%(desc)s %(name)s%(multi)s%(type)s - %(points)s - %(owner)s"
+msgstr "%(desc)s %(name)s%(multi)s%(type)s - s%(points)s - %(owner)s"

@@ -8,53 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-22 23:11-0300\n"
+"POT-Creation-Date: 2010-04-23 23:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: configwindow.py:13
-msgid "Gtracker configuration"
-msgstr ""
-
-#: configwindow.py:21
-msgid "Username"
-msgstr ""
-
-#: configwindow.py:25
-msgid "Password"
-msgstr ""
-
-#: configwindow.py:30
-msgid "Interval"
-msgstr ""
-
-#: configwindow.py:34
-msgid "Show stories using two lines"
-msgstr ""
-
-#: configwindow.py:37
-msgid "Show separator between stories"
-msgstr ""
-
-#: configwindow.py:40
-msgid "Show password"
-msgstr ""
-
-#: configwindow.py:43
-msgid "Ok"
-msgstr ""
-
-#: configwindow.py:46 gtracker.py:274
-msgid "Cancel"
-msgstr ""
-
-#: configwindow.py:79
-msgid "Could not save configuration info!"
-msgstr ""
 
 #: gtracker.py:114
 msgid "Configuration"
@@ -103,41 +63,45 @@ msgstr ""
 msgid "Retrieving stories for project %s ..."
 msgstr ""
 
-#: gtracker.py:260
+#: gtracker.py:265
 #, python-format
 msgid "%d stories retrieved."
 msgstr ""
 
-#: gtracker.py:274
+#: gtracker.py:279
 msgid "Please choose"
 msgstr ""
 
-#: gtracker.py:275
+#: gtracker.py:279 configwindow.py:46
+msgid "Cancel"
+msgstr ""
+
+#: gtracker.py:280
 msgid ""
 "Please choose what you want\n"
 "to do with your story."
 msgstr ""
 
-#: gtracker.py:290
+#: gtracker.py:295
 msgid "Story update canceled!"
-msgstr ""
-
-#: gtracker.py:299
-#, python-format
-msgid "Are you sure you want to %(verb)s '%(name)s'?"
 msgstr ""
 
 #: gtracker.py:304
 #, python-format
+msgid "Are you sure you want to %(verb)s '%(name)s'?"
+msgstr ""
+
+#: gtracker.py:309
+#, python-format
 msgid "Could not start to work on '%s'"
 msgstr ""
 
-#: gtracker.py:311
+#: gtracker.py:316
 #, python-format
 msgid "'%(name)s' %(verb)s."
 msgstr ""
 
-#: gtracker.py:330
+#: gtracker.py:335
 #, python-format
 msgid ""
 "About this session\n"
@@ -147,18 +111,54 @@ msgid ""
 "%(str)s"
 msgstr ""
 
-#: gtracker.py:330
+#: gtracker.py:335
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr ""
 
-#: gtracker.py:351
+#: gtracker.py:356
 #, python-format
 msgid "Are you sure you want to mark task '%s' as completed?"
 msgstr ""
 
-#: gtracker.py:384
+#: gtracker.py:389
 #, python-format
 msgid "Task '%s' marked as completed."
+msgstr ""
+
+#: configwindow.py:13
+msgid "Gtracker configuration"
+msgstr ""
+
+#: configwindow.py:21
+msgid "Username"
+msgstr ""
+
+#: configwindow.py:25
+msgid "Password"
+msgstr ""
+
+#: configwindow.py:30
+msgid "Interval"
+msgstr ""
+
+#: configwindow.py:34
+msgid "Show stories using two lines"
+msgstr ""
+
+#: configwindow.py:37
+msgid "Show separator between stories"
+msgstr ""
+
+#: configwindow.py:40
+msgid "Show password"
+msgstr ""
+
+#: configwindow.py:43
+msgid "Ok"
+msgstr ""
+
+#: configwindow.py:79
+msgid "Could not save configuration info!"
 msgstr ""
 
 #: state.py:16 state.py:17
@@ -209,34 +209,36 @@ msgstr ""
 msgid "Rejected"
 msgstr ""
 
-#: story.py:21
+#: task.py:17
+#, python-format
+msgid "Task %s"
+msgstr ""
+
+#: story.py:22
 msgid " or "
 msgstr ""
 
-#: story.py:26
+#: story.py:27
 msgid "Done"
 msgstr ""
 
-#: story.py:30
+#: story.py:31
 msgid "Unestimated"
 msgstr ""
 
-#: story.py:30
+#: story.py:31
 #, python-format
 msgid "%s points"
 msgstr ""
 
-#: story.py:34
+#: story.py:37
 #, python-format
-msgid "%(desc)s %(name)s%(multi)s%(points)s - %(owner)s - %(tasks_len)d tasks"
+msgid ""
+"%(desc)s %(name)s%(multi)s%(type)s - s%(points)s - %(owner)s - %(tasks_len)d "
+"tasks"
 msgstr ""
 
-#: story.py:36
+#: story.py:39
 #, python-format
-msgid "%(desc)s %(name)s%(multi)s%(points)s - %(owner)s"
-msgstr ""
-
-#: task.py:17
-#, python-format
-msgid "Task %s"
+msgid "%(desc)s %(name)s%(multi)s%(type)s - %(points)s - %(owner)s"
 msgstr ""
