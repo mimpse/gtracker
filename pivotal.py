@@ -139,7 +139,7 @@ class Pivotal:
          if len(points)>0:
             points = points[0].firstChild.data
          else:
-            points = 0
+            points = "0"
          
          if len(type)>0:
             type = type[0].firstChild.data
