@@ -75,6 +75,7 @@ class Gtracker:
       self.username  = self.config.username
       self.password  = self.config.password
       self.pivotal   = Pivotal(self)
+      self.firstrun  = True
 
       self.menu         = gtk.Menu()
       self.config_menu  = gtk.Menu()
@@ -243,6 +244,9 @@ class Gtracker:
             menu_item = gtk.MenuItem(("%s" % story),False)
             story.menu_item = menu_item
 
+            if not self.firstrun:
+               self.notify(story.__str__())
+
             if story.done or int(story.points)<0:
                story.menu_item.set_sensitive(False)
             
@@ -265,6 +269,7 @@ class Gtracker:
       self.set_tooltip(_("%d stories retrieved.") % count)
       self.blinking(False)
       self.working = False
+      self.firstrun = False
       self.schedule_next_check()
 
    def schedule_next_check(self):
@@ -284,6 +289,10 @@ class Gtracker:
       resp = dialog.run()
       dialog.destroy()
       return resp
+
+   def notify(self,msg):
+      noti = pynotify.Notification(_("Story alert"),msg,self.get_icon("gtracker.png"))
+      noti.show()
 
    def update_story_state(self,story,silent=False):
       # choose state
