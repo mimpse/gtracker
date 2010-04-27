@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-23 23:57-0300\n"
+"POT-Creation-Date: 2010-04-27 16:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,92 +16,96 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gtracker.py:114
+#: gtracker.py:115
 msgid "Configuration"
 msgstr ""
 
-#: gtracker.py:121
+#: gtracker.py:122
 msgid "Check now!"
 msgstr ""
 
-#: gtracker.py:128
+#: gtracker.py:129
 msgid "Statistics"
 msgstr ""
 
-#: gtracker.py:135
+#: gtracker.py:136
 msgid "About"
 msgstr ""
 
-#: gtracker.py:142
+#: gtracker.py:143
 msgid "Quit"
 msgstr ""
 
-#: gtracker.py:158 gtracker.py:178
+#: gtracker.py:159 gtracker.py:179
 msgid "Please configure your username and password and try again"
 msgstr ""
 
-#: gtracker.py:162
+#: gtracker.py:163
 msgid "Authenticating and verifying stories ..."
 msgstr ""
 
-#: gtracker.py:186
+#: gtracker.py:187
 msgid ""
 "Could not authenticate. Please verify your username and password and try "
 "again."
 msgstr ""
 
-#: gtracker.py:190
+#: gtracker.py:191
 msgid "Error authenticating. Please try again."
 msgstr ""
 
-#: gtracker.py:194
+#: gtracker.py:195
 msgid "Retrieving projects info ..."
 msgstr ""
 
-#: gtracker.py:209
+#: gtracker.py:210
 #, python-format
 msgid "Retrieving stories for project %s ..."
 msgstr ""
 
-#: gtracker.py:265
+#: gtracker.py:248
+msgid "story alert"
+msgstr ""
+
+#: gtracker.py:269
 #, python-format
 msgid "%d stories retrieved."
 msgstr ""
 
-#: gtracker.py:279
+#: gtracker.py:284
 msgid "Please choose"
 msgstr ""
 
-#: gtracker.py:279 configwindow.py:46
+#: gtracker.py:284 configwindow.py:46
 msgid "Cancel"
 msgstr ""
 
-#: gtracker.py:280
+#: gtracker.py:285
 msgid ""
 "Please choose what you want\n"
 "to do with your story."
 msgstr ""
 
-#: gtracker.py:295
+#: gtracker.py:304
 msgid "Story update canceled!"
 msgstr ""
 
-#: gtracker.py:304
+#: gtracker.py:313
 #, python-format
 msgid "Are you sure you want to %(verb)s '%(name)s'?"
 msgstr ""
 
-#: gtracker.py:309
+#: gtracker.py:318
 #, python-format
 msgid "Could not start to work on '%s'"
 msgstr ""
 
-#: gtracker.py:316
+#: gtracker.py:325
 #, python-format
 msgid "'%(name)s' %(verb)s."
 msgstr ""
 
-#: gtracker.py:335
+#: gtracker.py:344
 #, python-format
 msgid ""
 "About this session\n"
@@ -111,62 +115,59 @@ msgid ""
 "%(str)s"
 msgstr ""
 
-#: gtracker.py:335
+#: gtracker.py:344
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr ""
 
-#: gtracker.py:356
+#: gtracker.py:365
 #, python-format
 msgid "Are you sure you want to mark task '%s' as completed?"
 msgstr ""
 
-#: gtracker.py:389
+#: gtracker.py:398
 #, python-format
 msgid "Task '%s' marked as completed."
 msgstr ""
 
-#: configwindow.py:13
-msgid "Gtracker configuration"
+#: story.py:27
+msgid " or "
 msgstr ""
 
-#: configwindow.py:21
-msgid "Username"
+#: story.py:34
+msgid "Done"
 msgstr ""
 
-#: configwindow.py:25
-msgid "Password"
+#: story.py:38
+msgid "Unestimated"
 msgstr ""
 
-#: configwindow.py:30
-msgid "Interval"
+#: story.py:38
+#, python-format
+msgid "%s points"
 msgstr ""
 
-#: configwindow.py:34
-msgid "Show stories using two lines"
+#: story.py:44
+#, python-format
+msgid ""
+"%(desc)s %(name)s%(multi)s%(type)s - s%(points)s - %(owner)s - %(tasks_len)d "
+"tasks"
 msgstr ""
 
-#: configwindow.py:37
-msgid "Show separator between stories"
-msgstr ""
-
-#: configwindow.py:40
-msgid "Show password"
-msgstr ""
-
-#: configwindow.py:43
-msgid "Ok"
-msgstr ""
-
-#: configwindow.py:79
-msgid "Could not save configuration info!"
+#: story.py:46
+#, python-format
+msgid "%(desc)s %(name)s%(multi)s%(type)s - %(points)s - %(owner)s"
 msgstr ""
 
 #: state.py:16 state.py:17
 msgid "Unscheduling"
 msgstr ""
 
-#: state.py:16 state.py:17
-msgid "Voided"
+#: state.py:16
+msgid "Unscheduled"
+msgstr ""
+
+#: state.py:17
+msgid "Unstarted"
 msgstr ""
 
 #: state.py:18
@@ -214,31 +215,38 @@ msgstr ""
 msgid "Task %s"
 msgstr ""
 
-#: story.py:22
-msgid " or "
+#: configwindow.py:13
+msgid "Gtracker configuration"
 msgstr ""
 
-#: story.py:27
-msgid "Done"
+#: configwindow.py:21
+msgid "Username"
 msgstr ""
 
-#: story.py:31
-msgid "Unestimated"
+#: configwindow.py:25
+msgid "Password"
 msgstr ""
 
-#: story.py:31
-#, python-format
-msgid "%s points"
+#: configwindow.py:30
+msgid "Interval"
 msgstr ""
 
-#: story.py:37
-#, python-format
-msgid ""
-"%(desc)s %(name)s%(multi)s%(type)s - s%(points)s - %(owner)s - %(tasks_len)d "
-"tasks"
+#: configwindow.py:34
+msgid "Show stories using two lines"
 msgstr ""
 
-#: story.py:39
-#, python-format
-msgid "%(desc)s %(name)s%(multi)s%(type)s - %(points)s - %(owner)s"
+#: configwindow.py:37
+msgid "Show separator between stories"
+msgstr ""
+
+#: configwindow.py:40
+msgid "Show password"
+msgstr ""
+
+#: configwindow.py:43
+msgid "Ok"
+msgstr ""
+
+#: configwindow.py:79
+msgid "Could not save configuration info!"
 msgstr ""
