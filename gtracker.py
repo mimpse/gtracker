@@ -245,7 +245,7 @@ class Gtracker:
             story.menu_item = menu_item
 
             if not self.firstrun:
-               self.notify(story.__str__())
+               self.notify(("%s %s" % (proj_name,_("story alert"))),story.str(True))
 
             if story.done or int(story.points)<0:
                story.menu_item.set_sensitive(False)
@@ -290,8 +290,8 @@ class Gtracker:
       dialog.destroy()
       return resp
 
-   def notify(self,msg):
-      noti = pynotify.Notification(_("Story alert"),msg,self.get_icon("gtracker.png"))
+   def notify(self,title,msg):
+      noti = pynotify.Notification(title,msg,self.get_icon("gtracker.png"))
       noti.show()
 
    def update_story_state(self,story,silent=False):

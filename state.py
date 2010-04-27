@@ -13,8 +13,8 @@ class State:
 
 class States:
    states = {}
-   states["unscheduled"] = State("unscheduled"  ,["started"],_("Unscheduling"),_("Voided"),False,True) # this one will never show
-   states["unstarted"]   = State("unstarted"    ,["started"],_("Unscheduling"),_("Voided"),False,True) # this one will never show
+   states["unscheduled"] = State("unscheduled"  ,["started"],_("Unscheduling"),_("Unscheduled"),False,True) # this one will never show
+   states["unstarted"]   = State("unstarted"    ,["started"],_("Unscheduling"),_("Unstarted"),False,True) # this one will never show
    states["started"]     = State("started"      ,["finished"],_("Start"),_("Started"),True,False)
    states["finished"]    = State("finished"     ,["delivered"],_("Finish"),_("Finished"),True,False)
    states["delivered"]   = State("delivered"    ,["accepted","rejected"],_("Deliver"),_("Delivered"),True,False)

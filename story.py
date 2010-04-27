@@ -18,9 +18,16 @@ class Story:
       self.multiline = True
 
    def __str__(self):
-      next_states = self.next_states()
-      state_desc  = _(" or ").join([_(States.get_state(st).verb) for st in next_states])
-      state_desc  = state_desc.lower().capitalize()
+      return self.str()
+
+   def str(self,past=False):
+      state_desc     = ""
+      if not past:
+         next_states = self.next_states()
+         state_desc  = _(" or ").join([_(States.get_state(st).verb) for st in next_states])
+         state_desc  = state_desc.lower().capitalize()
+      else:
+         state_desc  = _(States.get_state(self.state).past).lower().capitalize()
 
       # nothing more to do here
       if len(state_desc)<1:
