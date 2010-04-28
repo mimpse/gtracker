@@ -76,6 +76,7 @@ class Gtracker:
       self.password  = self.config.password
       self.pivotal   = Pivotal(self)
       self.firstrun  = True
+      self.hashes    = {}
 
       self.menu         = gtk.Menu()
       self.config_menu  = gtk.Menu()
@@ -196,6 +197,9 @@ class Gtracker:
       projs = self.pivotal.get_projects()
       count = 0
 
+      old_hashes  = self.hashes
+      self.hashes = {}
+
       for proj in projs:
          proj_id, proj_name, proj_last = proj
          proj_found = None
@@ -244,7 +248,12 @@ class Gtracker:
             menu_item = gtk.MenuItem(("%s" % story),False)
             story.menu_item = menu_item
 
-            if not self.firstrun:
+            self.hashes[story.hash()] = story.name
+            snew = False
+            if not story.hash() in old_hashes:
+               snew = True
+
+            if not self.firstrun and snew:
                self.notify(("%s %s" % (proj_name,_("story alert"))),story.str(True))
 
             if story.done or int(story.points)<0:

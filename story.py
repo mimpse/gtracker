@@ -1,5 +1,6 @@
 from state import *
 import gettext
+import hashlib
 
 _ = gettext.gettext
 
@@ -44,6 +45,9 @@ class Story:
          return _("%(desc)s %(name)s%(multi)s%(type)s - s%(points)s - %(owner)s - %(tasks_len)d tasks") % values
       else:
          return _("%(desc)s %(name)s%(multi)s%(type)s - %(points)s - %(owner)s") % values
+
+   def hash(self):
+      return hashlib.md5("%06d%06d%06d%s" % (int(self.proj_id),int(self.id),int(self.points),self.state)).hexdigest()
 
    def next_states(self):
       return States.get_state(self.state).next_states
