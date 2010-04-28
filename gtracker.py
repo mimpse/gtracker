@@ -69,7 +69,6 @@ class Gtracker:
       self.stories   = {}
       self.working   = False
       self.stats     = {}
-      self.manual    = False
       self.config    = Config()
       self.interval  = self.config.interval
       self.username  = self.config.username
@@ -77,6 +76,7 @@ class Gtracker:
       self.pivotal   = Pivotal(self)
       self.firstrun  = True
       self.hashes    = {}
+      self.old_hashes= {}
 
       self.menu         = gtk.Menu()
       self.config_menu  = gtk.Menu()
@@ -170,12 +170,8 @@ class Gtracker:
       self.checkItem.set_sensitive(True)
 
    def check_stories(self):
-      if self.manual:
-         self.manual = False
-         self.schedule_next_check()
-         return
-
       if not self.have_authentication_info():
+         print "No authentication found."
          self.show_auth_message()
          self.show_error(_("Please configure your username and password and try again"))
          return
@@ -185,6 +181,7 @@ class Gtracker:
 
       try:
          if not self.pivotal.auth():
+            print "Could not authenticate."
             self.set_tooltip(_("Could not authenticate. Please verify your username and password and try again."))
             self.working = False
             return
@@ -197,7 +194,7 @@ class Gtracker:
       projs = self.pivotal.get_projects()
       count = 0
 
-      old_hashes  = self.hashes
+      self.old_hashes.update(self.hashes)
       self.hashes = {}
 
       for proj in projs:
@@ -250,10 +247,13 @@ class Gtracker:
 
             self.hashes[story.hash()] = story.name
             snew = False
-            if not story.hash() in old_hashes:
+            print "checking for '%s' - %s in %s" % (story.name,story.hash(),",".join(self.old_hashes.keys()))
+            if not story.hash() in self.old_hashes:
+               print "didnt't find %s" % story.hash()
                snew = True
 
             if not self.firstrun and snew:
+               print "there were some changes on %s - %s" % (story.name,story.hash())
                self.notify(("%s %s" % (proj_name,_("story alert"))),story.str(True))
 
             if story.done or int(story.points)<0:
@@ -436,7 +436,6 @@ class Gtracker:
 
    def check_now(self,widget,data=None):
       self.check_thread()
-      self.manual = True
 
    def check_thread(self):
       t = InitThread(self)
