@@ -15,7 +15,7 @@ class Config:
       self.multiline = False
       self.separator = False
       self.gconf     = gconf.client_get_default()
-      self.appname   = "Gtracker"
+      self.appname   = "gtracker"
 
       self.username_key   = "/apps/gtracker/username"
       self.password_key   = "/apps/gtracker/password"
@@ -45,9 +45,7 @@ class Config:
             pass
          if gk.is_available():
             names = gk.list_keyring_names_sync()
-            try:
-               names.index(self.appname)
-            except:
+            if not self.appname in names:
                gk.create_sync(self.appname,"")
 
             keys = gk.list_item_ids_sync(self.appname)
