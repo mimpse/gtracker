@@ -1,9 +1,11 @@
+import time
 import urllib
 import urllib2
 import xml.dom.minidom
 
 AUTH_URL       = "https://www.pivotaltracker.com/services/v3/tokens/active"
 PROJECTS_URL   = "http://www.pivotaltracker.com/services/v3/projects"
+PIVOTAL_HOME   = "http://www.pivotaltracker.com"
 
 from story import *
 from task  import *
@@ -14,6 +16,7 @@ class Pivotal:
       self.token     = None
       self.username  = None
       self.password  = None
+      self.check     = True
 
    def auth(self):
       data  = urllib.urlencode((('username',self.gui.username),('password',self.gui.password)))
@@ -195,7 +198,23 @@ class Pivotal:
          print "update_story_state: %s" % exc
          return False
 
+   def connectivity(self):
+      for i in range(10):
+         print "Checking connectivity: %d" % i
+         try:
+            urllib.urlopen(PIVOTAL_HOME)
+            print "Connected."
+            return True
+         except Exception as exc:
+            print "Failed connectivity: %d %s" % (i,exc)
+         time.sleep(5)
+      return False
+
    def get_xml(self,elem,url,method="GET",data=None,headers=None):
+      if self.check and not self.connectivity():
+         raise Exception, "Failed to connect"
+      self.check = False
+
       if headers==None:
          req   = urllib2.Request(url,data)
       else:
