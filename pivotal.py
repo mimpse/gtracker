@@ -199,7 +199,7 @@ class Pivotal:
          return False
 
    def connectivity(self):
-      for i in range(10):
+      for i in range(30):
          print "Checking connectivity: %d" % i
          try:
             urllib.urlopen(PIVOTAL_HOME)
