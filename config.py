@@ -50,6 +50,7 @@ class Config:
 
             keys = gk.list_item_ids_sync(self.appname)
             if len(keys)==1:
+               gk.unlock_sync(self.appname,"")
                info = gk.item_get_info_sync(self.appname,keys[0])
                self.username  = info.get_display_name() 
                self.password  = info.get_secret()
