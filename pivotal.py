@@ -42,7 +42,11 @@ class Pivotal:
       for proj in projs:
          id    = proj.getElementsByTagName("id")[0].firstChild.data
          name  = proj.getElementsByTagName("name")[0].firstChild.data
-         last  = proj.getElementsByTagName("last_activity_at")[0].firstChild.data
+         try:
+            last = proj.getElementsByTagName("last_activity_at")[0].firstChild.data
+         except Exception as exc:
+            last = ""
+            print "get_projects: %s" % exc 
          data.append([id,name,last])
       return data         
 
