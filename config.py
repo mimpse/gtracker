@@ -90,7 +90,7 @@ class Config:
             keys = gk.list_item_ids_sync(self.appname)
             if len(keys)>0:
                for key in keys:
-                  gk.item_delete_sync(self.appname,2L)
+                  gk.item_delete_sync(self.appname,key)
             gk.item_create_sync(self.appname,gk.ITEM_GENERIC_SECRET,username,{"username":username},password,True)
       except Exception as exc:
          return False
