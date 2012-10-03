@@ -4,7 +4,7 @@ import urllib2
 import xml.dom.minidom
 
 AUTH_URL       = "https://www.pivotaltracker.com/services/v3/tokens/active"
-PROJECTS_URL   = "http://www.pivotaltracker.com/services/v3/projects"
+PROJECTS_URL   = "https://www.pivotaltracker.com/services/v3/projects"
 PIVOTAL_HOME   = "http://www.pivotaltracker.com"
 
 from story import *
